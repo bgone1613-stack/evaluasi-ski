@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuis Evaluasi Interaktif SKI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4F46E5; /* Warna Indigo/Biru Modern */
+            --primary-light: #EEF2FF; /* Background terang bernuansa indigo */
+            --bg-color: #F8FAFC;
+            --card-bg: #FFFFFF;
+            --text-main: #1E293B;
+            --text-muted: #64748B;
+            --border: #E2E8F0;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-main); min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px; }
+        .container { width: 100%; max-width: 800px; background: var(--card-bg); border-radius: 16px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05); overflow: hidden; border: 1px solid var(--border); }
+        .header { background: linear-gradient(135deg, #4F46E5 0%, #3730A3 100%); color: white; padding: 30px; text-align: center; }
+        .header h1 { font-size: 24px; font-weight: 700; margin-bottom: 8px; }
+        .header p { font-size: 14px; opacity: 0.9; }
+        .content { padding: 30px; }
+        .screen { display: none; }
+        .screen.active { display: block; }
+        .form-group { margin-bottom: 20px; text-align: left; }
+        .form-group label { display: block; font-weight: 600; margin-bottom: 8px; font-size: 14px; }
+        .form-group input, .form-group select { width: 100%; padding: 12px 16px; border: 1px solid var(--border); border-radius: 8px; font-size: 15px; outline: none; background-color: #FFFFFF; color: var(--text-main); }
+        .form-group input:focus, .form-group select:focus { border-color: var(--primary); }
+        .form-group select:disabled { background-color: #F1F5F9; cursor: not-allowed; }
+        .quiz-meta { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; font-size: 14px; font-weight: 600; color: var(--text-muted); }
+        .question-box { font-size: 18px; font-weight: 600; margin-bottom: 20px; line-height: 1.5; }
+        .options-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 30px; }
+        .option-item { padding: 14px 18px; border: 1px solid var(--border); border-radius: 8px; cursor: pointer; transition: all 0.2s; background: #FFF; font-size: 15px; display: flex; align-items: center; gap: 12px; }
+        .option-item:hover { border-color: var(--primary); background: var(--primary-light); }
+        .option-item.selected { border-color: var(--primary); background: var(--primary-light); color: #312E81; font-weight: 600; }
+        .btn { background-color: var(--primary); color: white; border: none; padding: 14px 24px; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; width: 100%; transition: background 0.2s; }
+        .btn:hover { background-color: #4338CA; }
+        .btn:disabled { background-color: #CBD5E1; cursor: not-allowed; }
+        .result-box { text-align: center; padding: 20px 0; }
+        .score-circle { width: 120px; height: 120px; border-radius: 50%; background: var(--primary-light); color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: 700; margin: 0 auto 20px auto; border: 4px solid var(--primary); }
+        .result-title { font-size: 22px; font-weight: 700; margin-bottom: 10px; }
+        .result-desc { color: var(--text-muted); font-size: 15px; margin-bottom: 30px; }
+        .status-badge { font-size: 13px; color: #10B981; margin-top: 10px; font-weight: 600; display: none; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>Evaluasi Pembelajaran SKI</h1>
+        <p>Pilih identitas dan materi evaluasi dengan lengkap</p>
+    </div>
+    
+    <div class="content">
+        <!-- Screen 1: Identitas & Pemilihan Materi -->
+        <div id="screen-welcome" class="screen active">
+            <div style="text-align: center; margin-bottom: 24px;">
+                <h3 style="font-size: 20px; margin-bottom: 8px;">Selamat Datang, Siswa/i Hebat!</h3>
+                <p style="color: var(--text-muted); font-size: 14px;">Lengkapi data diri dan pilih materi evaluasi sebelum memulai kuis.</p>
+            </div>
+            
+            <div class="form-group">
+                <label for="student-name">Nama Lengkap</label>
+                <input type="text" id="student-name" placeholder="Contoh: Ahmad Fauzan">
+            </div>
+
+            <div class="form-group">
+                <label for="student-class">Pilih Kelas</label>
+                <select id="student-class" onchange="handleClassChange()">
+                    <option value="" disabled selected>-- Pilih Kelas Anda --</option>
+                    <option value="7A">7A</option>
+                    <option value="7B">7B</option>
+                    <option value="7C">7C</option>
+                    <option value="8A">8A</option>
+                    <option value="8B">8B</option>
+                    <option value="8C">8C</option>
+                    <option value="9A">9A</option>
+                    <option value="9B">9B</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="student-materi">Pilih Materi / Bab Evaluasi</label>
+                <select id="student-materi" disabled>
+                    <option value="" disabled selected>-- Pilih Kelas Terlebih Dahulu --</option>
+                </select>
+            </div>
+
+            <button class="btn" id="start-btn" onclick="startQuiz()" disabled>Mulai Kuis</button>
+        </div>
+
+        <!-- Screen 2: Kuis -->
+        <div id="screen-quiz" class="screen">
+            <div class="quiz-meta">
+                <span id="question-counter">Soal 1 dari 20</span>
+                <span id="student-info-display" style="color: var(--primary);"></span>
+            </div>
+            <div class="question-box" id="question-text">Memuat soal...</div>
+            <div class="options-list" id="options-container"></div>
+            <button class="btn" id="next-btn" onclick="nextQuestion()" disabled>Lanjut</button>
+        </div>
+
+        <!-- Screen 3: Hasil -->
+        <div id="screen-result" class="screen">
+            <div class="result-box">
+                <div class="score-circle" id="final-score">0</div>
+                <div class="result-title">Kuis Selesai!</div>
+                <p class="result-desc" id="result-desc-text">Terima kasih telah menyelesaikan evaluasi pembelajaran.</p>
+                <div class="status-badge" id="sync-status"><i class="fa-solid fa-circle-check"></i> Nilai dan keterangan materi berhasil tersimpan otomatis!</div>
+                <button class="btn" onclick="restartQuiz()" style="margin-top: 20px;">Ulangi Kuis</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // MASUKKAN URL GOOGLE APPS SCRIPT WEB APP ANDA DI SINI
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwQNPKsAItX8AZI9dTklDAGb1j4Jrp77FIMgImPX3Xk19P0LFd49_d7ApZ7yx_iyjsT/exec';
+
+    // Daftar materi berdasarkan tingkat kelas
+    const materiPerPelajaran = {
+        "7": [
+            "Bab 1 : Dakwah Nabi Muhammad SAW di Makkah",
+            "Bab 2 : Dakwah Nabi Muhammad SAW di Madinah",
+            "Bab 3 : Kepemimpinan Khulafaurrasyidin",
+            "Bab 4 : Daulah Umayyah",
+            "Bab 5 : Gaya Kepemimpinan Umar bin Abdul Aziz"
+        ],
+        "8": [
+    "Bab 1 : Sejarah Peradaban Islam Pada Masa Daulah Abbasiyah",
+    "Bab 2 : Peran Ilmuan Muslim Dan Ulama Terhadap Peradaban Islam Pada Masa Daulah Abbasiyah", // Sesuaikan dengan bankSoal
+    "Bab 3 : Daulah Ayyubiyah: Cinta Tanah Air Dan Semangat Persatuan Umat",
+    "Bab 4 : Pemimpin Dan Ilmuwan Daulah Ayyubiyah: Teladan Cinta Dalam Karya",
+    "Bab 5 : Daulah Mamluk: Benteng Peradaban Islam Dengan Semangat Cinta Dan Keberanian"
+        ],
+        "9": [
+            "Bab 1 : Sejarah Islam di Indonesia",
+            "Bab 2 : Kerajaan Islam di Indonesia",
+            "Bab 3 : Peran Pesantren dalam Dakwah Islam di Indonesia",
+            "Bab 4 : Nilai-Nilai Islam dan Kearifan Lokal",
+            "Bab 5 : Walisanga dalam Dakwah Islam di Indonesia",
+            "Bab 6 : Syaikh Abdur Rauf As-Singkili & Syaikh Muhammad Arsyad Al-Banjari",
+            "Bab 7 : Pendiri Organisasi Keagamaan di Indonesia"
+        ]
+    };
+
+    // DATABASE SOAL TERPUSAT BERDASARKAN BAB / MATERI
+    const bankSoal = {
+        "Bab 1 : Dakwah Nabi Muhammad SAW di Makkah": [
+            { question: "Istilah Jahiliyah bagi masyarakat Arab sebelum Islam merujuk pada kondisi...", options: ["Kebodohan dalam tulis baca", "Kesesatan akidah dan moral", "Kemiskinan ekonomi secara massal", "Ketiadaan hukum adat sama sekali"], answer: 1 },
+            { question: "Siapakah kelompok yang tetap memegang teguh ajaran Nabi Ibrahim AS di tengah masyarakat penyembah berhala?", options: ["Kaum Quraisy", "Kaum Hanif", "Kaum Anshar", "Kaum Muhajirin"], answer: 1 },
+            { question: "Semangat membela kehormatan suku secara berlebihan yang memicu perang antar kabilah disebut...", options: ["Ukhuwah", "Ashobiyah", "Ubudiyah", "Tabayyun"], answer: 1 },
+            { question: "Perilaku kejam masyarakat Jahiliyah terhadap bayi perempuan disebabkan oleh perasaan...", options: ["Kekurangan bahan makanan", "Malu dan terhina", "Aturan adat istiadat raja", "Tuntutan peperangan"], answer: 1 },
+            { question: "Inti dari substansi penyucian akidah (Tauhid) dalam dakwah Rasulullah adalah...", options: ["Menyembah Allah semata", "Menghormati nenek moyang", "Menjaga warisan budaya", "Menyatukan suku Arab"], answer: 0 },
+            { question: "Menurut ajaran Islam, standar kemuliaan seorang manusia di hadapan Allah SWT diukur berdasarkan...", options: ["Kekayaan harta bendanya", "Tingkat ketakwaannya", "Kedudukan sukunya", "Keturunan bangsawan"], answer: 1 },
+            { question: "Mengapa penanaman iman kepada Hari Akhir menjadi sangat penting pada periode Makkah?", options: ["Sebagai aturan perdagangan", "Dasar pertanggungjawaban", "Persiapan berperang", "Petunjuk arah hijrah"], answer: 1 },
+            { question: "Berapa lama perkiraan waktu pelaksanaan dakwah secara sembunyi-sembunyi (Sirriyah)?", options: ["1 tahun pertama", "3 tahun pertama", "5 tahun pertama", "10 tahun pertama"], answer: 1 },
+            { question: "Tempat yang menjadi pusat pertemuan dan pembinaan umat Islam pada masa Sirriyah adalah rumah...", options: ["Abu Bakar Ash-Shiddiq", "Arqam bin Abil Arqam", "Ali bin Abi Thalib", "Zaid bin Haritsah"], answer: 1 },
+            { question: "Siapakah di antara berikut yang merupakan golongan As-Sabiqunal Awwalun dari kalangan anak-anak?", options: ["Zaid bin Haritsah", "Ali bin Abi Thalib", "Bilal bin Rabah", "Utsman bin Affan"], answer: 1 },
+            { question: "Perintah Allah SWT untuk memulai dakwah secara terang-terangan (Jahriyah) terdapat dalam...", options: ["QS. Al-Hijr ayat 94", "QS. Al-Alaq ayat 1-5", "QS. Al-Muddatstsir", "QS. An-Nasr"], answer: 0 },
+            { question: "Dimana lokasi pertama kali Nabi Muhammad SAW menyeru penduduk Makkah secara terbuka?", options: ["Gua Hira", "Puncak Bukit Shafa", "Madinah Al-Munawwarah", "Pasar Ukadz"], answer: 1 },
+            { question: "Mengapa kaum Quraisy menganggap ajaran Islam sebagai ancaman ekonomi mereka?", options: ["Pajak perdagangan dinaikkan", "Hilangnya bisnis berhala", "Larangan berdagang ke luar negeri", "Monopoli pasar oleh Islam"], answer: 1 },
+            { question: "Apa alasan utama kaum Quraisy menolak kebenaran Islam meski mereka tahu Nabi Muhammad jujur?", options: ["Fanatisme nenek moyang", "Ajaran terlalu sulit", "Tidak percaya pada Tuhan", "Dipaksa bangsa lain"], answer: 0 },
+            { question: "Keluarga pertama yang seluruh anggotanya menjadi syahid karena siksaan kaum Quraisy adalah...", options: ["Keluarga Yasir", "Keluarga Abu Bakar", "Keluarga Zaid", "Keluarga Bilal"], answer: 0 },
+            { question: "Negeri Habasyah (Ethiopia) dipilih sebagai tujuan hijrah pertama karena dipimpin oleh...", options: ["Raja yang sangat kejam", "Raja yang sangat adil", "Saudagar kaya raya", "Pemimpin militer kuat"], answer: 1 },
+            { question: "Peristiwa 'Amul Huzni (Tahun Kesedihan) terjadi karena wafatnya dua pelindung Nabi, yaitu...", options: ["Abu Bakar dan Umar", "Abu Thalib dan Khadijah", "Hamzah dan Abbas", "Utsman dan Ali"], answer: 1 },
+            { question: "Kapan tepatnya peristiwa 'Amul Huzni terjadi dalam kalender kenabian?", options: ["Tahun ke-3 kenabian", "Tahun ke-7 kenabian", "Tahun ke-10 kenabian", "Tahun ke-13 kenabian"], answer: 2 },
+            { question: "Apa respon penduduk kota Thaif saat Nabi Muhammad SAW datang menawarkan dakwah?", options: ["Menyambut dengan hangat", "Menerima tanpa syarat", "Menolak dan melempar batu", "Mengajak berdiskusi"], answer: 2 },
+            { question: "Sikap mulia yang ditunjukkan Nabi Muhammad SAW meski telah disakiti penduduk Thaif adalah...", options: ["Membalas dengan pasukan", "Mendoakan ampunan bagi mereka", "Meminta bantuan malaikat", "Menutup akses perdagangan"], answer: 1 }
+        ],
+        
+        // Contoh template untuk bab lain (bisa ditambah manual sesuai kebutuhan)
+        "Bab 2 : Dakwah Nabi Muhammad SAW di Madinah": [
+            { question: "Apa nama kota Madinah sebelum kedatangan Nabi Muhammad SAW?", options: ["Taif", "Yatsrib", "Syam", "Makkah"], answer: 1 },
+            { question: "Suku utama penduduk Madinah yang menyambut dan menolong kaum Muslimin Makkah disebut kaum...", options: ["Muhajirin", "Anshar", "Quraisy", "Khazraj"], answer: 1 },
+            { question: "Sahabat setia yang mendampingi Nabi Muhammad SAW dalam perjalanan hijrah ke Madinah adalah...", options: ["Umar bin Khattab", "Ali bin Abi Thalib", "Abu Bakar Ash-Shiddiq", "Utsman bin Affan"], answer: 2 },
+            { question: "Bangunan pertama yang didirikan oleh Nabi Muhammad SAW setibanya di Madinah adalah...", options: ["Pasar Madinah", "Masjid", "Benteng pertahanan", "Rumah pemerintahan"], answer: 1 },
+            { question: "Kebijakan sosial pertama Nabi di Madinah untuk mempererat persaudaraan kaum Muhajirin dan Anshar disebut...", options: ["Mu'akhah", "Mithaq", "Ukhuwah", "Tabayyun"], answer: 0 },
+            { question: "Dokumen konstitusi tertulis pertama di dunia yang mengatur kehidupan masyarakat majemuk di Madinah dikenal sebagai...", options: ["Piagam Jakarta", "Piagam Madinah", "Perjanjian Hudaibiyah", "Konstitusi Makkah"], answer: 1 },
+            { question: "Salah satu isi pokok dari Piagam Madinah adalah...", options: ["Monopoli perdagangan oleh kaum Yahudi", "Kebebasan beragama bagi seluruh warga Madinah", "Pengusiran seluruh kaum non-Muslim", "Kewajiban membayar pajak tinggi"], answer: 1 },
+            { question: "Perang besar pertama dalam sejarah Islam yang terjadi di Madinah pada bulan Ramadan tahun 2 H adalah...", options: ["Perang Badar", "Perang Uhud", "Perang Khandak", "Perang Tabuk"], answer: 0 },
+            { question: "Faktor utama penyebab kekalahan pasukan Islam pada Perang Uhud adalah...", options: ["Kekurangan jumlah pasukan", "Pasukan pemanah melanggar instruksi Nabi", "Pengkhianatan kaum Yahudi", "Kelelahan fisik"], answer: 1 },
+            { question: "Strategi pembuatan parit pertahanan di sekeliling kota Madinah pada Perang Khandak diusulkan oleh sahabat...", options: ["Abu Bakar Ash-Shiddiq", "Umar bin Khattab", "Salman al-Farisi", "Khalid bin Walid"], answer: 2 },
+            { question: "Perjanjian damai antara kaum Muslimin dan kaum Quraisy pada tahun 6 Hijriyah dikenal dengan nama...", options: ["Perjanjian Hudaibiyah", "Piagam Madinah", "Perjanjian Aqabah", "Fathu Makkah"], answer: 0 },
+            { question: "Apa hikmah terbesar di balik disepakatinya Perjanjian Hudaibiyah bagi umat Islam?", options: ["Islam dilarang berkembang", "Dakwah menyebar luas dan eksistensi negara Islam diakui", "Kaum Quraisy menguasai Madinah", "Umar bin Khattab wafat"], answer: 1 },
+            { question: "Peristiwa pembebasan kota Makkah tanpa pertumpahan darah pada tahun 8 Hijriyah dikenal dengan istilah...", options: ["Amul Huzni", "Fathu Makkah", "Haji Wada'", "Isra Miraj"], answer: 0 },
+            { question: "Tindakan pertama Nabi Muhammad SAW setelah berhasil memasuki kota Makkah saat Fathu Makkah adalah...", options: ["Menghukum seluruh penduduk Quraisy", "Membersihkan berhala di sekeliling Ka'bah", "Membangun istana megah", "Membagi-bagikan harta rampasan"], answer: 1 },
+            { question: "Dalam bidang ekonomi, Nabi Muhammad SAW membangun pusat pasar mandiri di Madinah guna menyaingi dominasi ekonomi kaum...", options: ["Romawi", "Persia", "Yahudi", "Bani Tsaqif"], answer: 2 },
+            { question: "Panglima perang muda yang ditunjuk Rasulullah dalam ekspedisi militer ke perbatasan Romawi menjelang akhir hayatnya adalah...", options: ["Usamah bin Zaid", "Ali bin Abi Thalib", "Zaid bin Haritsah", "Sa'd bin Abi Waqqash"], answer: 0 },
+            { question: "Pidato monumental Nabi Muhammad SAW saat melaksanakan ibadah haji terakhir yang berisi pesan persamaan derajat manusia disebut...", options: ["Khutbah Hudaibiyah", "Khutbah Wada'", "Risalah Madinah", "Wasiat Terakhir"], answer: 1 },
+            { question: "Berapa lama perkiraan masa dakwah dan kepemimpinan Nabi Muhammad SAW di Madinah?", options: ["3 tahun", "10 tahun", "13 tahun", "23 tahun"], answer: 1 },
+            { question: "Di kota manakah Nabi Muhammad SAW wafat dan dimakamkan?", options: ["Makkah", "Taif", "Madinah", "Jerusalem"], answer: 2 },
+            { question: "Sifat kepemimpinan utama yang ditunjukkan Nabi Muhammad SAW dalam membina masyarakat Madinah yang majemuk adalah...", options: ["Otoriter dan keras", "Demokratis, adil, dan penuh kasih sayang", "Tertutup dan eksklusif", "Hanya membela kaum Muhajirin"], answer: 1 }
+        ],
+
+        "Bab 3 : Kepemimpinan Khulafaurrasyidin": [
+            { question: "Apa arti dari istilah 'Khulafaurrasyidin'?", options: ["Pemimpin yang kaya raya", "Para pemimpin yang mendapat petunjuk", "Raja-raja penakluk dunia", "Panglima perang Islam"], answer: 1 },
+            { question: "Siapakah khalifah pertama yang memimpin umat Islam setelah wafatnya Nabi Muhammad SAW?", options: ["Umar bin Khattab", "Utsman bin Affan", "Abu Bakar Ash-Shiddiq", "Ali bin Abi Thalib"], answer: 2 },
+            { question: "Tantangan terbesar yang dihadapi pada awal masa kepemimpinan Abu Bakar Ash-Shiddiq adalah...", options: ["Perang melawan Romawi", "Munculnya kaum murtad, nabi palsu, dan penolak zakat", "Konflik internal di Madinah", "Perpecahan di kalangan Muhajirin"], answer: 1 },
+            { question: "Kebijakan penting yang dilakukan Abu Bakar atas usul Umar bin Khattab demi menyelamatkan teks suci adalah...", options: ["Membangun masjid raya", "Pengumpulan (kodifikasi) lembaran Al-Quran", "Menerjemahkan Al-Quran ke bahasa Persia", "Membakar mushaf palsu"], answer: 1 },
+            { question: "Gelar kehormatan 'Amirul Mukminin' (Pemimpin Orang-orang Beriman) pertama kali disematkan kepada khalifah...", options: ["Abu Bakar Ash-Shiddiq", "Umar bin Khattab", "Utsman bin Affan", "Ali bin Abi Thalib"], answer: 1 },
+            { question: "Pada masa pemerintahan siapakah wilayah Islam mengalami ekspansi besar-besaran serta pembentukan administrasi negara (diwan)?", options: ["Abu Bakar Ash-Shiddiq", "Umar bin Khattab", "Utsman bin Affan", "Ali bin Abi Thalib"], answer: 1 },
+            { question: "Penetapan sistem penanggalan Hijriah yang dimulai dari peristiwa hijrah Nabi pertama kali diinisiasi pada masa kekhalifahan...", options: ["Abu Bakar Ash-Shiddiq", "Umar bin Khattab", "Utsman bin Affan", "Ali bin Abi Thalib"], answer: 1 },
+            { question: "Melalui sistem dewan formatur (ahlus syura) yang dibentuk menjelang wafatnya Umar, terpilihlah khalifah ketiga yaitu...", options: ["Ali bin Abi Thalib", "Utsman bin Affan", "Muawiyah bin Abi Sufyan", "Zubair bin Awwam"], answer: 1 },
+            { question: "Prestasi monumental khalifah Utsman bin Affan dalam bidang pelestarian Al-Quran adalah...", options: ["Menulis Al-Quran di atas batu", "Menstandarisasi dan memperbanyak Mushaf Uthmani", "Menghafal seluruh hadis Nabi", "Mencetak Al-Quran pertama di dunia"], answer: 1 },
+            { question: "Salah satu pemicu ketidakpuasan sebagian masyarakat pada akhir masa Utsman bin Affan adalah tuduhan terhadap kebijakan...", options: ["Pajak yang terlalu tinggi", "Pengangkatan kerabat dalam jabatan penting", "Penutupan jalur perdagangan", "Larangan mendirikan masjid"], answer: 1 },
+            { question: "Khalifah Utsman bin Affan wafat sebagai syahid akibat dibunuh oleh kelompok pemberontak saat beliau sedang membaca...", options: ["Surat Al-Baqarah", "Kitab Taurat", "Al-Quran", "Surat Yasin"], answer: 2 },
+            { question: "Siapakah sahabat yang dibaiat menjadi khalifah keempat menggantikan Utsman bin Affan?", options: ["Muawiyah bin Abi Sufyan", "Ali bin Abi Thalib", "Hasan bin Ali", "Thalhah bin Ubaidillah"], answer: 1 },
+            { question: "Untuk memperkuat kendali pemerintahan dan stabilitas wilayah, Khalifah Ali bin Abi Thalib memindahkan pusat pemerintahan dari Madinah ke kota...", options: ["Damaskus", "Kufah", "Kairo", "Basrah"], answer: 1 },
+            { question: "Perang saudara pertama dalam sejarah Islam yang melibatkan pasukan Ali melawan kelompok Aisyah, Thalhah, dan Zubair dikenal sebagai...", options: ["Perang Siffin", "Perang Jamal (Unta)", "Perang Nahrawan", "Perang Khandak"], answer: 1 },
+            { question: "Pertempuran antara pasukan Ali bin Abi Thalib melawan pasukan Muawiyah bin Abi Sufyan di wilayah Sungai Efrat diakhiri dengan proses arbitrase yang disebut...", options: ["Tahkim", "Mu'akhah", "Mithaq", "Fathu"], answer: 0 },
+            { question: "Kelompok ekstrem yang memisahkan diri dari barisan Ali bin Abi Thalib akibat penolakan mereka terhadap hasil arbitrase dinamakan kaum...", options: ["Syiah", "Khawarij", "Murjiah", "Mutazilah"], answer: 1 },
+            { question: "Sifat kepemimpinan utama yang ditunjukkan oleh para Khulafaurrasyidin dalam menjalankan roda pemerintahan adalah...", options: ["Diktator dan mutlak", "Demokratis, adil, dan mengutamakan kepentingan rakyat", "Mementingkan keluarga sendiri", "Tertutup dari kritik masyarakat"], answer: 1 },
+            { question: "Berapa lama secara keseluruhan masa pemerintahan Khulafaurrasyidin berlangsung?", options: ["Sekitar 10 tahun", "Sekitar 30 tahun", "Sekitar 50 tahun", "Sekitar 100 tahun"], answer: 1 },
+            { question: "Berakhirnya era kepemimpinan Khulafaurrasyidin ditandai dengan beralihnya sistem pemerintahan menjadi sistem dinasti (monarki) yang diprakarsai oleh...", options: ["Muawiyah bin Abi Sufyan", "Yazid bin Muawiyah", "Marwan bin Hakam", "Ziyad bin Abihi"], answer: 0 },
+            { question: "Nilai keteladanan yang paling menonjol dari kesederhanaan hidup para Khulafaurrasyidin meskipun memimpin imperium besar adalah...", options: ["Hidup mewah dari harta negara", "Tetap zuhud, jujur, dan melayani rakyat dengan tulus", "Menolak memegang kekuasaan sama sekali", "Mengumpulkan kekayaan pribadi"], answer: 1 }
+        ],
+
+        "Bab 4 : Daulah Umayyah": [
+            { question: "Siapakah pendiri sekaligus khalifah pertama Daulah Umayyah?", options: ["Muawiyah bin Abi Sufyan", "Yazid bin Muawiyah", "Marwan bin Hakam", "Abdul Malik bin Marwan"], answer: 0 },
+            { question: "Di kota manakah pusat pemerintahan Daulah Umayyah didirikan?", options: ["Kufah", "Madinah", "Damaskus", "Baghdad"], answer: 2 },
+            { question: "Perubahan mendasar sistem pemerintahan pada masa Daulah Umayyah dibandingkan Khulafaurrasyidin adalah dari sistem musyawarah menjadi...", options: ["Demokrasi total", "Monarki turun-temurun (Dinasti)", "Republik federal", "Oligarki militer"], answer: 1 },
+            { question: "Berapa lama perkiraan masa kekuasaan Daulah Umayyah di Damaskus berlangsung?", options: ["Sekitar 30 tahun", "Sekitar 90 tahun", "Sekitar 500 tahun", "Sekitar 1000 tahun"], answer: 1 },
+            { question: "Khalifah siapa yang melakukan reformasi administrasi dengan menjadikan bahasa Arab sebagai bahasa resmi negara (diwan)?", options: ["Muawiyah bin Abi Sufyan", "Abdul Malik bin Marwan", "Al-Walid bin Abdul Malik", "Hisyam bin Abdul Malik"], answer: 1 },
+            { question: "Kebijakan penting dalam bidang ekonomi yang dicetuskan oleh Abdul Malik bin Marwan adalah...", options: ["Mencetak mata uang resmi Islam (Dinar dan Dirham)", "Menghapuskan seluruh sistem pajak", "Memberikan pinjaman tanpa bunga kepada saudagar", "Memonopoli perdagangan rempah"], answer: 0 },
+            { question: "Bangunan monumental berupa masjid megah di Damaskus yang dibangun pada masa Khalifah Al-Walid bin Abdul Malik adalah...", options: ["Masjid Al-Aqsa", "Masjid Nabawi", "Masjid Umayyad (Jami' Damaskus)", "Masjid Cordoba"], answer: 2 },
+            { question: "Sistem pos resmi untuk mempercepat komunikasi pemerintahan Daulah Umayyah dikenal dengan nama...", options: ["Diwan al-Barid", "Diwan al-Jund", "Diwan al-Kharaj", "Diwan al-Rasa'il"], answer: 0 },
+            { question: "Panglima perang Daulah Umayyah yang memimpin penaklukan wilayah Andalusia (Spanyol) adalah...", options: ["Thariq bin Ziyad", "Tariq bin Syiyad", "Khalid bin Walid", "Musa bin Nushair"], answer: 0 },
+            { question: "Bangunan suci berkubah emas di Yerusalem (Palestina) yang dibangun pada masa Khalifah Abdul Malik bin Marwan adalah...", options: ["Qubbat ash-Sakhrah (Dome of the Rock)", "Masjid Quba", "Gedung Dar al-Imarah", "Benteng Ajnadain"], answer: 0 },
+            { question: "Secara garis besar, sejarah kepemimpinan Daulah Umayyah terbagi menjadi dua periode utama, yaitu keturunan Sufyani dan keturunan...", options: ["Abbasiyah", "Marwani", "Ayyubiyah", "Mamluk"], answer: 1 },
+            { question: "Wilayah kekuasaan Islam pada masa Daulah Umayyah membentang luas dari perbatasan Cina di timur hingga ke negara...", options: ["Prancis dan Spanyol di barat", "Inggris di utara", "Afrika Selatan di selatan", "Italia di tengah"], answer: 0 },
+            { question: "Siapakah nama khalifah terakhir Daulah Umayyah yang berkuasa di Damaskus?", options: ["Marwan bin Muhammad", "Yazid bin Walid", "Ibrahim bin Al-Walid", "Muawiyah bin Yazid"], answer: 0 },
+            { question: "Gerakan revolusi yang berhasil meruntuhkan kekuasaan Daulah Umayyah di Damaskus dipelopori oleh keturunan...", options: ["Ali bin Abi Thalib", "Abbas bin Abdul Muthalib (Bani Abbasiyah)", "Umar bin Khattab", "Abu Bakar Ash-Shiddiq"], answer: 1 },
+            { question: "Pertempuran penentu yang menandai runtuhnya kekuasaan Daulah Umayyah dan kemenangan pasukan Abbasiyah adalah...", options: ["Perang Badar", "Perang Siffin", "Pertempuran Sungai Zab", "Perang Yarmuk"], answer: 2 },
+            { question: "Tahun berapakah Daulah Umayyah di Damaskus resmi runtuh?", options: ["661 M", "750 M", "1258 M", "1492 M"], answer: 1 },
+            { question: "Meskipun berpusat di Damaskus, salah satu peninggalan peradaban Islam terbesar Daulah Umayyah di Eropa barat berada di kota...", options: ["Cordoba (Spanyol)", "Paris (Prancis)", "Roma (Italia)", "London (Inggris)"], answer: 0 },
+            { question: "Kebijakan perluasan wilayah (ekspansi) yang sangat masif pada masa Daulah Umayyah bertujuan untuk...", options: ["Menyebarkan ajaran Islam dan memperkuat stabilitas politik", "Mencari daerah tambang emas semata", "Mengusir seluruh penduduk asli", "Membentuk aliansi militer dengan Romawi"], answer: 0 },
+            { question: "Sifat administrasi pemerintahan Daulah Umayyah dikenal bersifat sentralistik, di mana kekuasaan tertinggi dipegang penuh oleh...", options: ["Dewan Rakyat", "Khalifah", "Para Gubernur", "Majelis Ulama"], answer: 1 },
+            { question: "Ibrah atau pelajaran penting yang dapat dipetik dari masa kejayaan hingga keruntuhan Daulah Umayyah adalah...", options: ["Kekuasaan yang besar harus dijaga dengan keadilan, persatuan, dan amanah", "Pembangunan fisik saja sudah cukup untuk melanggengkan negara", "Sistem monarki adalah satu-satunya cara terbaik memimpin umat", "Perbedaan suku tidak berpengaruh pada stabilitas negara"], answer: 0 }
+        ],
+
+        "Bab 5 : Gaya Kepemimpinan Umar bin Abdul Aziz": [
+            { question: "Umar bin Abdul Aziz memiliki hubungan kekerabatan langsung dari jalur ibu dengan salah satu Khulafaurrasyidin, yaitu...", options: ["Abu Bakar Ash-Shiddiq", "Umar bin Khattab", "Utsman bin Affan", "Ali bin Abi Thalib"], answer: 1 },
+            { question: "Khalifah Daulah Umayyah pendahulu yang menunjuk Umar bin Abdul Aziz sebagai penggantinya adalah...", options: ["Muawiyah bin Abi Sufyan", "Abdul Malik bin Marwan", "Sulaiman bin Abdul Malik", "Yazid bin Muawiyah"], answer: 2 },
+            { question: "Bagaimana sikap pertama kali Umar bin Abdul Aziz saat ditunjuk menjadi khalifah?", options: ["Sangat gembira dan merayakannya", "Menerima dengan berat hati dan menganggapnya sebagai amanah berat", "Menolak secara mutlak dan kabur dari istana", "Meminta tambahan fasilitas mewah"], answer: 1 },
+            { question: "Gaya hidup Umar bin Abdul Aziz terkenal sangat sederhana atau disebut dengan sikap...", options: ["Hedonisme", "Materialisme", "Zuhud", "Otoriter"], answer: 2 },
+            { question: "Langkah awal yang dilakukan Umar bin Abdul Aziz untuk menegakkan keadilan sosial adalah...", options: ["Mengembalikan harta kekayaan keluarga istana yang diambil secara tidak sah ke Baitulmal", "Menaikkan pajak seluruh rakyat", "Membangun istana baru yang lebih megah", "Memecat seluruh pegawai istana"], answer: 0 },
+            { question: "Kebijakan penting apa yang diambil Umar bin Abdul Aziz terkait tradisi mencela Ali bin Abi Thalib di atas mimbar masjid?", options: ["Melanjutkannya sesuai adat istiadat", "Menghapusnya dan menggantinya dengan pembacaan ayat Al-Quran (QS. An-Nahl: 90)", "Menyerahkan keputusan pada rakyat", "Membatasi hanya di kota Damaskus saja"], answer: 1 },
+            { question: "Pada masa pemerintahan siapakah kodifikasi (penulisan resmi) hadis Nabi Muhammad SAW pertama kali diperintahkan secara sistematis?", options: ["Umar bin Khattab", "Muawiyah bin Abi Sufyan", "Umar bin Abdul Aziz", "Harun al-Rasyid"], answer: 2 },
+            { question: "Kebijakan Umar bin Abdul Aziz terhadap kaum Muslim non-Arab (Mawali) dalam hal pajak (jizya) adalah...", options: ["Menghapuskan pajak jizya bagi mereka yang telah masuk Islam dan menyamakan hak mereka", "Menaikkan pajak demi kas negara", "Mengusir mereka keluar wilayah Daulah", "Mewajibkan mereka membayar pajak ganda"], answer: 0 },
+            { question: "Puncak keberhasilan ekonomi pada masa Umar bin Abdul Aziz ditandai dengan kondisi di mana...", options: ["Harga barang melonjak tinggi", "Sulitnya mencari orang miskin yang berhak menerima zakat", "Kas negara mengalami kebangkrutan total", "Terjadinya inflasi besar-besaran"], answer: 1 },
+            { question: "Berapa lama masa pemerintahan Umar bin Abdul Aziz yang sangat singkat namun penuh berkah?", options: ["Sekitar 2 tahun 5 bulan", "Sekitar 10 tahun", "Sekitar 20 tahun", "Sekitar 40 tahun"], answer: 0 },
+            { question: "Kisah terkenal mengenai Umar bin Abdul Aziz yang mematikan lampu minyak milik negara saat menerima tamu pribadi menunjukkan sikap...", options: ["Pelit dan kikir", "Amanah dan sangat berhati-hati menjaga harta rakyat", "Takut kepada kegelapan", "Suka hidup dalam kesusahan"], answer: 1 },
+            { question: "Bagaimana sikap Umar bin Abdul Aziz ketika menerima kritik atau masukan dari rakyatnya?", options: ["Marah dan memenjarakan pengkritik", "Mengabaikannya karena merasa paling benar", "Menerima dengan lapang dada dan berterima kasih", "Menolak mendengarkan pendapat rakyat"], answer: 2 },
+            { question: "Karena keadilan dan ketakwaannya yang luar biasa, Umar bin Abdul Aziz sering dijuluki sebagai...", options: ["Khalifah kelima dari Khulafaurrasyidin", "Pendiri Dinasti baru", "Penakluk Eropa", "Panglima perang terhebat"], answer: 0 },
+            { question: "Umar bin Abdul Aziz menghapus hak-hak istimewa (privilege) yang selama ini dinikmati oleh golongan...", options: ["Kaum fakir miskin", "Keluarga besar Bani Umayyah (kaum bangsawan istana)", "Seluruh rakyat jelata", "Para pedagang pasar"], answer: 1 },
+            { question: "Berbeda dengan sebagian penguasa yang fokus pada perluasan wilayah ekspansi semata, fokus utama kepemimpinan Umar bin Abdul Aziz adalah...", options: ["Pembenahan internal, penegakan keadilan, dan kesejahteraan umat", "Memperluas istana kekhalifahan", "Mengumpulkan harta benda sebanyak-banyaknya", "Mengisolasi wilayah dari dunia luar"], answer: 0 },
+            { question: "Umar bin Abdul Aziz wafat akibat sakit yang diduga kuat karena...", options: ["Kecelakaan dalam peperangan", "Diracun oleh pihak internal istana yang tidak suka dengan reformasinya", "Terkena wabah penyakit menular di Madinah", "Faktor usia lanjut yang renta"], answer: 1 },
+            { question: "Dalam memilih para gubernur dan pejabat daerah, kriteria utama yang dicari oleh Umar bin Abdul Aziz adalah...", options: ["Keturunan bangsawan tinggi", "Kekayaan harta yang melimpah", "Keagamaan, kejujuran, dan kompetensi moral", "Hubungan keluarga dekat"], answer: 2 },
+            { question: "Apa dampak dari kebijakan keadilan sosial Umar bin Abdul Aziz terhadap penduduk non-Muslim di wilayah kekuasaannya?", options: ["Banyak yang memeluk Islam secara sukarela karena kagum pada akhlak Islam", "Melakukan pemberontakan bersenjata", "Meninggalkan wilayah kekhalifahan secara massal", "Mengadakan perjanjian damai dengan ancaman"], answer: 0 },
+            { question: "Pandangan Umar bin Abdul Aziz mengenai jabatan kepemimpinan negara adalah sebagai...", options: ["Alat untuk memperkaya diri dan keluarga", "Sumber kekuasaan mutlak tanpa batas", "Amanah berat yang harus dipertanggungjawabkan di hadapan Allah", "Hadiah istimewa dari pendahulu"], answer: 2 },
+            { question: "Ibrah terpenting dari gaya kepemimpinan Umar bin Abdul Aziz bagi seorang pemimpin adalah...", options: ["Pemimpin yang baik adalah pemimpin yang mengutamakan kedudukan", "Kekuasaan harus dipertahankan dengan segala cara", "Kepemimpinan sejati berakar dari ketakwaan, kejujuran, dan keberpihakan pada rakyat kecil", "Kemewahan istana menunjukkan wibawa negara"], answer: 2 }
+        ],
+
+        "Bab 1 : Sejarah Peradaban Islam Pada Masa Daulah Abbasiyah": [
+            { question: "Siapakah pendiri sekaligus khalifah pertama Daulah Abbasiyah?", options: ["Abu al-Abbas as-Saffah", "Abu Ja'far al-Mansur", "Harun al-Rasyid", "Al-Ma'mun"], answer: 0 },
+            { question: "Daulah Abbasiyah dinamakan demikian karena para pendirinya merupakan keturunan dari...", options: ["Ali bin Abi Thalib", "Abbas bin Abdul Muthalib (paman Nabi)", "Umar bin Khattab", "Abu Bakar Ash-Shiddiq"], answer: 1 },
+            { question: "Pada tahun berapakah Daulah Abbasiyah resmi berdiri setelah meruntuhkan Daulah Umayyah?", options: ["661 M", "750 M", "1258 M", "1492 M"], answer: 1 },
+            { question: "Kota manakah yang dijadikan sebagai pusat pemerintahan baru dan ibu kota Daulah Abbasiyah oleh Khalifah Al-Mansur?", options: ["Damaskus", "Kufah", "Baghdad", "Kairo"], answer: 2 },
+            { question: "Mengapa kota Baghdad pada masa awal pembangunannya sering dijuluki sebagai 'Kota Bundar' (The Round City)?", options: ["Karena bentuk arsitektur kota dan bentengnya melingkar", "Karena terletak di pulau berbentuk lingkaran", "Karena dibangun di atas danau", "Karena dikelilingi tembok berbentuk bola"], answer: 0 },
+            { question: "Siapakah khalifah yang dikenal sebagai pembangun sejati kota Baghdad dan peletak fondasi administrasi negara Abbasiyah?", options: ["Abu al-Abbas as-Saffah", "Abu Ja'far al-Mansur", "Harun al-Rasyid", "Al-Mu'tashim"], answer: 1 },
+            { question: "Masa keemasan (*Golden Age*) Daulah Abbasiyah dalam bidang ilmu pengetahuan dan kebudayaan mencapai puncaknya pada masa pemerintahan khalifah...", options: ["Muawiyah bin Abi Sufyan", "Harun al-Rasyid dan Al-Ma'mun", "Marwan bin Muhammad", "Al-Watsiq"], answer: 1 },
+            { question: "Apa nama lembaga perpustakaan, pusat penerjemahan, dan akademi ilmu pengetahuan terbesar yang didirikan pada masa Daulah Abbasiyah?", options: ["Baitul Hikmah", "Darul Arqam", "Jami' Damaskus", "Madrasah Nizamiyah"], answer: 0 },
+            { question: "Gerakan apa yang sangat masif terjadi pada masa keemasan Abbasiyah sehingga melahirkan banyak ilmuwan muslim penemu berbagai disiplin ilmu?", options: ["Gerakan penerjemahan buku-buku sains kuno (Yunani, Persia, India)", "Gerakan perluasan wilayah militer secara besar-besaran", "Gerakan penutupan akses perdagangan asing", "Gerakan penghapusan tradisi lokal"], answer: 0 },
+            { question: "Faktor utama yang mendorong kemajuan pesat peradaban Islam pada masa Daulah Abbasiyah adalah...", options: ["Sikap terbuka terhadap ilmu pengetahuan dari berbagai peradaban", "Isolasi wilayah dari pengaruh luar", "Fokus penuh pada kekuatan militer semata", "Penolakan terhadap teknologi modern"], answer: 0 },
+            { question: "Baghdad pada masa kejayaannya dikenal sebagai pusat peradaban dunia yang bersifat...", options: ["Kedaerahan dan tertutup", "Kosmopolitan (tempat bertemunya berbagai bangsa dan budaya)", "Eksklusif bagi orang Arab saja", "Nomaden dan berpindah-pindah"], answer: 1 },
+            { question: "Bidang ilmu apa yang paling menonjol perkembangannya dan melahirkan banyak tokoh besar seperti Al-Khawarizmi dan Ibnu Sina?", options: ["Sains, kedokteran, matematika, dan astronomi", "Hanya ilmu fikih murni", "Hanya seni sastra puisi", "Hanya ilmu pertukangan kayu"], answer: 0 },
+            { question: "Siapakah tokoh matematikawan muslim terkenal pada masa Abbasiyah yang menemukan angka nol dan aljabar?", options: ["Al-Khawarizmi", "Ibnu Haitsam", "Al-Farabi", "Al-Kindi"], answer: 0 },
+            { question: "Secara garis besar, periode kekuasaan Daulah Abbasiyah berlangsung selama kurang lebih berapa lama?", options: ["Sekitar 100 tahun", "Sekitar 300 tahun", "Sekitar 500 tahun (5 abad)", "Sekitar 1000 tahun"], answer: 2 },
+            { question: "Faktor internal utama yang menyebabkan kemunduran Daulah Abbasiyah adalah...", options: ["Luasnya wilayah yang sulit dikontrol serta konflik perebutan kekuasaan di internal istana", "Terlalu sedikitnya jumlah penduduk", "Ketiadaan sumber daya alam", "Larangan belajar bagi warga negara"], answer: 0 },
+            { question: "Faktor eksternal terbesar yang menghancurkan kekuatan militer dan membumihanguskan kota Baghdad adalah...", options: ["Serangan bangsa Mongol di bawah pimpinan Hulagu Khan", "Invasi tentara Romawi Timur", "Serangan pasukan Spanyol", "Penjajahan bangsa Eropa barat abad pertengahan"], answer: 0 },
+            { question: "Peristiwa kelam hancurnya kota Baghdad dan runtuhnya kekuasaan pusat Daulah Abbasiyah terjadi pada tahun...", options: ["750 M", "1000 M", "1258 M", "1453 M"], answer: 2 },
+            { question: "Bagaimana nasib Baitul Hikmah serta ribuan naskah ilmu pengetahuan saat Baghdad diserbu oleh pasukan Mongol?", options: ["Diselamatkan ke luar negeri secara utuh", "Dibakar dan dibuang ke Sungai Tigris hingga airnya berubah hitam", "Disimpan rapat di bawah tanah", "Diterjemahkan ulang oleh pasukan Mongol"], answer: 1 },
+            { question: "Meskipun Daulah Abbasiyah mengalami keruntuhan politik, warisan terbesar apa yang tetap ditinggalkan bagi peradaban dunia hingga kini?", options: ["Kumpulan harta karun emas", "Fondasi ilmu pengetahuan modern dan karya-karya ilmiah para ilmuwan muslim", "Sistem pemerintahan monarki mutlak", "Benteng pertahanan militer raksasa"], answer: 1 },
+            { question: "Ibrah atau pelajaran penting yang dapat dipetik dari sejarah kejayaan dan keruntuhan Daulah Abbasiyah adalah...", options: ["Kemajuan dan kejayaan suatu bangsa diraih melalui ilmu pengetahuan, pendidikan, serta persatuan, sementara kehancuran lahir dari perpecahan", "Kekuatan fisik dan persenjataan adalah satu-satunya penentu masa depan", "Ilmu pengetahuan tidak penting jika ekonomi stabil", "Peradaban besar tidak akan pernah bisa runtuh"], answer: 0 }
+        ],
+
+        "Bab 2 : Peran Ilmuan Muslim Dan Ulama Terhadap Peradaban Islam Pada Masa Daulah Abbasiyah": [
+            { question: "Tokoh ulama pendiri mazhab fikih yang hidup pada masa awal Daulah Abbasiyah dan menyusun kitab Al-Muwatha' adalah...", options: ["Imam Abu Hanifah", "Imam Malik bin Anas", "Imam Syafi'i", "Imam Ahmad bin Hanbal"], answer: 1 },
+            { question: "Siapakah pendiri mazhab fikih Hanafi yang juga hidup dan mengembangkan ilmunya pada masa kekhalifahan Abbasiyah?", options: ["Imam Abu Hanifah", "Imam Malik bin Anas", "Imam Syafi'i", "Imam Ahmad bin Hanbal"], answer: 0 },
+            { question: "Tokoh ulama hadis terkemuka penyusun kitab sahih yang paling otentik (Sahih al-Bukhari) adalah...", options: ["Imam Muslim", "Imam al-Bukhari", "Imam At-Tirmidzi", "Imam An-Nasa'i"], answer: 1 },
+            { question: "Ilmuwan muslim bidang kedokteran yang dijuluki sebagai Avicenna di dunia barat dan menulis kitab Al-Qanun fi at-Tibb adalah...", options: ["Ibnu Sina", "Al-Razi (Rhazes)", "Al-Zahrawi", "Ibnu Rusyd"], answer: 0 },
+            { question: "Siapakah dokter muslim terkemuka di era Abbasiyah yang menulis ensiklopedia kedokteran Al-Hawi dan menemukan perbedaan penyakit cacar dan campak?", options: ["Ibnu Sina", "Abu Bakar Ar-Razi (Rhazes)", "Al-Biruni", "Al-Kindi"], answer: 1 },
+            { question: "Ilmuwan muslim yang dikenal sebagai peletak dasar ilmu optik modern (fisika cahaya) melalui bukunya Kitab al-Manazir adalah...", options: ["Al-Khawarizmi", "Ibnu Al-Haitsam (Alhazen)", "Al-Farabi", "Jabir bin Hayyan"], answer: 1 },
+            { question: "Siapakah tokoh ilmuwan muslim yang dijuluki sebagai bapak kimia modern berkat penemuannya dalam bidang laboratorium dan metalurgi?", options: ["Jabir bin Hayyan", "Al-Kindi", "Al-Battani", "Ibnu Khaldun"], answer: 0 },
+            { question: "Filsuf muslim pertama dari kalangan bangsa Arab yang mencoba menyelaraskan antara filsafat Yunani dengan ajaran Islam adalah...", options: ["Al-Kindi", "Al-Farabi", "Ibnu Sina", "Ibnu Rusyd"], answer: 0 },
+            { question: "Tokoh astronom muslim yang berhasil menghitung orbit matahari dan memperbarui tabel astronomi Ptolemaeus adalah...", options: ["Al-Battani (Albatenius)", "Al-Khawarizmi", "Al-Zarqali", "Umar Khayyam"], answer: 0 },
+            { question: "Siapakah ahli geografi dan kartografi muslim yang menyusun peta dunia awal serta buku perjalanan untuk Raja Roger II?", options: ["Ibnu Batutah", "Al-Idrisi", "Ibnu Jubair", "Al-Mas'udi"], answer: 1 },
+            { question: "Kitab tafsir Al-Quran klasik yang sangat komprehensif dan menjadi rujukan utama karya Imam At-Tabari disebut Tafsir...", options: ["At-Tabari", "Al-Jalalain", "Ibnu Katsir", "Al-Qurthubi"], answer: 0 },
+            { question: "Ulama besar penyusun mazhab fikih keempat yang sempat mengalami cobaan berat (mihna) pada masa Abbasiyah adalah...", options: ["Imam Abu Hanifah", "Imam Malik bin Anas", "Imam Syafi'i", "Imam Ahmad bin Hanbal"], answer: 3 },
+            { question: "Apa peran utama para ulama fikih dan hadis dalam peradaban Islam masa Abbasiyah?", options: ["Mengatur strategi perang militer", "Menyusun hukum Islam dan membentengi akidah umat dari pemikiran menyimpang", "Memonopoli perdagangan internasional", "Menulis puisi istana kekhalifahan"], answer: 1 },
+            { question: "Ilmuwan ensiklopedis yang ahli dalam bidang sejarah, geografi, dan kebudayaan dunia, serta menulis kitab Muruj ad-Dahab adalah...", options: ["Al-Mas'udi", "Al-Biruni", "Al-Ya'qubi", "Ibnu Batutah"], answer: 0 },
+            { question: "Siapakah ilmuwan serba bisa (polymath) yang meneliti bidang astronomi, geodesi, matematika, dan sejarah India kuno dalam kitab Tahqiq ma li l-Hind?", options: ["Al-Biruni", "Al-Khawarizmi", "Ibnu Sina", "Al-Battani"], answer: 0 },
+            { question: "Peran penting lembaga pendidikan tinggi seperti Madrasah Nizamiyah yang didirikan pada masa Abbasiyah adalah...", options: ["Menjadi tempat pelatihan militer rahasia", "Menjadi pusat pendidikan formal dan pencetak ulama serta intelektual muslim berkualitas", "Tempat penyimpanan senjata negara", "Istana khusus para khalifah"], answer: 1 },
+            { question: "Apa kontribusi besar para ilmuwan muslim Abbasiyah dalam perkembangan ilmu pengetahuan dunia modern?", options: ["Menyembunyikan seluruh temuan agar tidak ditiru bangsa lain", "Mengembangkan metode ilmiah berbasis eksperimen dan observasi yang kemudian diadopsi bangsa Eropa", "Menghapus seluruh warisan sains kuno", "Fokus pada mitos dan takhayul semata"], answer: 1 },
+            { question: "Tokoh filsuf muslim besar yang dijuluki sebagai guru kedua setelah Aristoteles dan menulis risalah tentang Madinah al-Fadilah adalah...", options: ["Al-Farabi", "Al-Kindi", "Ibnu Sina", "Ibnu Bajjah"], answer: 0 },
+            { question: "Kitab hadis monumental kedua setelah Sahih al-Bukhari yang disusun oleh muridnya adalah...", options: ["Sahih Muslim", "Sunan An-Nasa'i", "Sunan Abi Dawud", "Jami' At-Tirmidzi"], answer: 0 },
+            { question: "Sikap keteladanan apa yang dapat kita contoh dari para ilmuwan muslim dan ulama pada masa Daulah Abbasiyah?", options: ["Sombong atas ilmu yang dimiliki", "Haus akan ilmu pengetahuan, rajin meneliti, berpikir kritis, serta berpegang teguh pada nilai agama", "Malas belajar dan hanya bergantung pada takdir", "Menolak berdiskusi dengan orang yang berbeda keyakinan"], answer: 1 }
+        ],
+
+        "Bab 3 : Daulah Ayyubiyah: Cinta Tanah Air Dan Semangat Persatuan Umat": [
+            { question: "Siapakah pendiri Daulah Ayyubiyah yang terkenal sebagai pahlawan Islam dalam Perang Salib?", options: ["Nur ad-Din Mahmud", "Salahuddin al-Ayyubi", "Imad ad-Din Zanki", "Baibars"], answer: 1 },
+            { question: "Dari suku manakah asal keturunan keluarga Salahuddin al-Ayyubi?", options: ["Turki", "Kurdi", "Persia", "Arab Badui"], answer: 1 },
+            { question: "Sebelum mendirikan Daulah Ayyubiyah di Mesir, Salahuddin al-Ayyubi adalah panglima perang di bawah kekuasaan Dinasti...", options: ["Fatimiyah", "Zangiyah", "Abbasiyah", "Umayyah"], answer: 1 },
+            { question: "Pada tahun berapa Daulah Ayyubiyah secara resmi berdiri di Mesir setelah runtuhnya Daulah Fatimiyah?", options: ["1171 M", "1187 M", "1250 M", "1258 M"], answer: 0 },
+            { question: "Apa visi utama dan semangat besar yang diusung oleh Salahuddin al-Ayyubi dalam memimpin Daulah Ayyubiyah?", options: ["Memonopoli jalur perdagangan laut", "Mewujudkan persatuan umat Islam dan membebaskan Baitulmaqdis", "Memperluas wilayah hingga ke Cina", "Mendirikan kerajaan sekuler"], answer: 1 },
+            { question: "Pertempuran penentu yang berhasil memenangkan pihak kaum Muslimin di bawah pimpinan Salahuddin atas Tentara Salib adalah...", options: ["Perang Badar", "Pertempuran Hattin", "Perang Siffin", "Perang Ain Jalut"], answer: 1 },
+            { question: "Pada tahun berapa pasukan Salahuddin al-Ayyubi berhasil membebaskan kembali kota suci Baitulmaqdis (Jerusalem) dari tangan Tentara Salib?", options: ["1171 M", "1187 M", "1200 M", "1258 M"], answer: 1 },
+            { question: "Bagaimana sikap Salahuddin al-Ayyubi terhadap penduduk dan tentara Salib Kristen saat berhasil merebut kembali Baitulmaqdis?", options: ["Melakukan pembantaian massal sebagai pembalasan", "Memberikan keamanan, ampunan, dan tebusan yang sangat ringan", "Mengusir mereka tanpa membawa harta benda sama sekali", "Memenjarakan seluruh warga kota seumur hidup"], answer: 1 },
+            { question: "Bentuk nyata kecintaan tanah air (*cinta tanah air*) yang ditunjukkan Salahuddin al-Ayyubi adalah...", options: ["Membiarkan wilayahnya dijajah bangsa asing", "Berjuang habis-habisan mempertahankan kedaulatan negeri-negeri Islam dari invasi luar", "Menjual benteng pertahanan demi keuntungan pribadi", "Meninggalkan tanah air saat ada ancaman"], answer: 1 },
+            { question: "Untuk memperkuat persatuan umat Islam, langkah politik apa yang ditempuh Salahuddin al-Ayyubi?", options: ["Menyatukan wilayah Mesir, Suriah, dan sebagian Irak di bawah satu komando", "Memecah belah umat berdasarkan suku", "Melarang suku non-Arab masuk Islam", "Membubarkan seluruh masjid raya"], answer: 0 },
+            { question: "Bangunan benteng megah di Kairo yang dibangun oleh Salahuddin al-Ayyubi untuk pertahanan militer dan pusat pemerintahan adalah...", options: ["Benteng Al-Khandak", "Benteng Qal'ah al-Jabal (Benteng Kairo)", "Benteng Damaskus", "Benteng Cordoba"], answer: 1 },
+            { question: "Dalam bidang pendidikan dan keagamaan, kebijakan penting yang diambil Daulah Ayyubiyah adalah...", options: ["Menghapuskan madrasah dan pusat pengajian", "Menghidupkan kembali mazhab Sunni dan mendirikan banyak lembaga pendidikan (madrasah)", "Hanya mengajarkan ilmu filsafat Yunani", "Menutup perpustakaan umum"], answer: 1 },
+            { question: "Universitas tertua di Mesir yang semakin berkembang pesat peran keilmuannya pada masa Daulah Ayyubiyah adalah...", options: ["Universitas Al-Azhar", "Madrasah Nizamiyah", "Darul Hikmah", "Universitas Cordoba"], answer: 0 },
+            { question: "Sifat ksatria, pemaaf, dan adil yang ditunjukkan oleh Salahuddin al-Ayyubi membuat beliau sangat disegani bahkan oleh musuh-musuhnya dari kalangan...", options: ["Tentara Salib (Eropa)", "Bangsa Mongol", "Kerajaan Romawi Kuno", "Dinasti Tang"], answer: 0 },
+            { question: "Sikap toleransi beragama yang diterapkan Daulah Ayyubiyah tampak pada...", options: ["Larangan beribadah bagi pemeluk agama lain", "Kebebasan beribadah yang diberikan kepada umat Kristen dan Yahudi di wilayah kekuasaannya", "Pengangkatan pendeta menjadi panglima perang", "Penghapusan seluruh tempat ibadah non-Islam"], answer: 1 },
+            { question: "Siapakah pengganti Salahuddin al-Ayyubi yang turut mempertahankan kesatuan wilayah Ayyubiyah dari gelombang serangan Perang Salib berikutnya?", options: ["Al-Adil dan Al-Kamil", "Hulagu Khan", "Baibars", "Qutuz"], answer: 0 },
+            { question: "Apa inti nilai dari 'Semangat Persatuan Umat' yang diajarkan pada masa Daulah Ayyubiyah?", options: ["Perpecahan suku adalah kekuatan utama", "Kemenangan dan kejayaan umat Islam hanya dapat diraih melalui ukhuwah dan persatuan yang kokoh", "Persatuan hanya berlaku bagi kalangan pejabat istana", "Sikap egoisme wilayah harus diutamakan"], answer: 1 },
+            { question: "Akhir dari kekuasaan Daulah Ayyubiyah di Mesir kemudian digantikan oleh dinasti militer dari kalangan budak yang disebut...", options: ["Dinasti Mamluk", "Dinasti Safawiyah", "Dinasti Mughal", "Dinasti Usmani"], answer: 0 },
+            { question: "Ibrah atau hikmah terbesar dari perjuangan Salahuddin al-Ayyubi bagi generasi muda Islam adalah...", options: ["Pentingnya memiliki jiwa patriotisme, kepedulian sosial, serta mengutamakan persatuan di atas kepentingan golongan", "Mengutamakan kekayaan material di atas segalanya", "Menghindari segala bentuk tanggung jawab sosial", "Menyerah pada keadaan ketika menghadapi masalah"], answer: 0 },
+            { question: "Sikap kepemimpinan Salahuddin al-Ayyubi yang paling dikenang dunia internasional (timur dan barat) adalah...", options: ["Kekejaman dalam menghukum lawan politik", "Akhlak mulia, jiwa ksatria (chivalry), dan keadilan tanpa pandang bulu", "Kecintaannya pada kemewahan istana", "Sikap tertutup terhadap dunia luar"], answer: 1 }
+        ],
+
+        "Bab 4 : Pemimpin Dan Ilmuwan Daulah Ayyubiyah: Teladan Cinta Dalam Karya": [
+            { question: "Siapakah penasihat terdekat dan penulis kenamaan yang mendampingi Salahuddin al-Ayyubi dalam membangun roda pemerintahan Daulah Ayyubiyah?", options: ["Ibnu Sina", "Al-Qadi al-Fadil", "Al-Kindi", "Al-Farabi"], answer: 1 },
+            { question: "Ilmuwan muslim terkemuka pada masa Daulah Ayyubiyah yang ahli dalam bidang botani dan farmakologi (obat-obatan) adalah...", options: ["Al-Khawarizmi", "Ibnu Haitsam", "Ibnu al-Baitar", "Jabir bin Hayyan"], answer: 2 },
+            { question: "Apa judul kitab ensiklopedia tumbuhan obat dan farmasi paling monumental karya Ibnu al-Baitar?", options: ["Al-Qanun fi at-Tibb", "Al-Jami' fi al-Adwiya al-Mufradah", "Kitab al-Manazir", "Al-Hawi fi at-Tibb"], answer: 1 },
+            { question: "Siapakah sejarawan besar penulis kitab sejarah terkenal Al-Kamil fi at-Tarikh yang hidup pada masa Daulah Ayyubiyah?", options: ["Al-Tabari", "Al-Mas'udi", "Ibnu Batutah", "Ibn al-Athir"], answer: 3 },
+            { question: "Dokter dan ilmuwan serba bisa pada masa Ayyubiyah yang menulis catatan penting mengenai anatomi manusia dan kondisi Mesir adalah...", options: ["Abdul Latif al-Baghdadi", "Ibnu Rusyd", "Al-Zahrawi", "Al-Biruni"], answer: 0 },
+            { question: "Siapakah saudara kandung Salahuddin al-Ayyubi yang handal dalam diplomasi dan administrasi serta melanjutkan kepemimpinan setelahnya?", options: ["Turan Syah", "Al-Adil Saif ad-Din", "Al-Muazzam Isa", "Nur ad-Din Zanki"], answer: 1 },
+            { question: "Sultan Daulah Ayyubiyah yang terkenal dengan kebijakan diplomasi damai serta menerima kunjungan Santo Fransiskus dari Assisi adalah...", options: ["Salahuddin al-Ayyubi", "Al-Malik al-Adil", "Al-Malik al-Kamil", "Ayyub bin Syadzi"], answer: 2 },
+            { question: "Filsuf terkemuka pencetus mazhab filsafat iluminasi (Hikmah al-Ishraq) yang hidup di era Ayyubiyah adalah...", options: ["Al-Farabi", "Ibnu Bajjah", "Suhrawardi al-Maqtul", "Ibnu Tufail"], answer: 2 },
+            { question: "Ulama ahli hadis besar yang menyusun kitab Riyadhus Shalihin dan lahir/berkembang di era sekitar kekuasaan Ayyubiyah adalah...", options: ["Imam Al-Bukhari", "Imam an-Nawawi", "Imam Muslim", "Imam Malik"], answer: 1 },
+            { question: "Apa bentuk peran nyata para pemimpin Daulah Ayyubiyah terhadap perkembangan ilmu pengetahuan?", options: ["Menutup seluruh akses pendidikan formal", "Membangun banyak madrasah, rumah sakit (Bimarestan), dan memberi tunjangan bagi ilmuwan", "Membatasi ilmu pengetahuan hanya untuk militer", "Melarang penerjemahan buku asing"], answer: 1 },
+            { question: "Fasilitas kesehatan canggih yang dibangun pada masa Daulah Ayyubiyah untuk merawat masyarakat secara gratis dinamakan...", options: ["Darul Hikmah", "Bimarestan (Rumah Sakit)", "Madrasah Nizamiyah", "Ribath al-Jund"], answer: 1 },
+            { question: "Makna dari tema 'Teladan Cinta Dalam Karya' dari para tokoh Daulah Ayyubiyah adalah...", options: ["Cinta diekspresikan hanya melalui puisi cinta", "Kecintaan kepada agama dan tanah air dibuktikan melalui dedikasi, karya nyata, serta pengabdian terbaik bagi umat", "Karya ilmiah dibuat demi mencari popularitas semata", "Bekerja hanya jika mendapat upah tinggi"], answer: 1 },
+            { question: "Bagaimana sikap Al-Qadi al-Fadil dalam mendukung dunia literasi dan keilmuan?", options: ["Membakar buku-buku filsafat", "Menyembunyikan naskah kuno di ruang bawah tanah", "Mewakafkan ribuan buku koleksi pribadinya dan mendirikan perpustakaan umum untuk rakyat", "Menjual buku langka demi keuntungan pribadi"], answer: 2 },
+            { question: "Kontribusi besar Ibnu al-Baitar dalam dunia sains modern diakui karena metode penelitiannya yang mengandalkan...", options: ["Mitos kuno dan cerita rakyat", "Observasi langsung, eksperimen lapangan, dan pengujian botani secara empiris", "Spekulasi tanpa pembuktian", "Catatan fiksi belaka"], answer: 1 },
+            { question: "Selain bidang militer, fokus utama para pemimpin Daulah Ayyubiyah dalam membangun peradaban adalah pada bidang...", options: ["Pendidikan, kesehatan, dan kesejahteraan sosial", "Pariwisata mewah istana", "Industri persenjataan berat global", "Pelayaran luar angkasa"], answer: 0 },
+            { question: "Siapakah tokoh pendiri mazhab filsafat Isyraqi (Iluminasi) yang mengharmoniskan antara rasio dan intuisi spiritual di masa Ayyubiyah?", options: ["Al-Kindi", "Ibnu Sina", "Al-Ghazali", "Suhrawardi"], answer: 3 },
+            { question: "Apa peran penting Abdul Latif al-Baghdadi dalam dunia kedokteran?", options: ["Melakukan koreksi kritis terhadap literatur medis kuno berdasarkan observasi anatomi secara langsung", "Menciptakan obat bius kimiawi modern", "Menemukan mikroskop elektron pertama", "Menjabat sebagai menteri kesehatan Romawi"], answer: 0 },
+            { question: "Sifat teladan yang dapat dicontoh dari para ilmuwan Daulah Ayyubiyah adalah...", options: ["Cepat puas dengan hasil temuan orang lain", "Kegigihan dalam melakukan penelitian, produktivitas tinggi dalam menulis karya, dan kerendahan hati", "Menutup diri dari kritik ilmiah", "Menghindari perdebatan akademis"], answer: 1 },
+            { question: "Bagaimana hubungan antara pemimpin politik (sultan) dan para ulama/ilmuwan pada masa Daulah Ayyubiyah?", options: ["Saling bermusuhan dan berebut kekuasaan", "Sangat sinergis, di mana sultan bertindak sebagai pelindung dan penyandang dana utama kegiatan ilmiah", "Terpisah total tanpa ada komunikasi", "Sultan sering mengasingkan ilmuwan"], answer: 1 },
+            { question: "Ibrah utama dari bab pemimpin dan ilmuwan Daulah Ayyubiyah adalah...", options: ["Bahwa kemajuan peradaban yang hakiki lahir dari perpaduan antara kepemimpinan yang adil dan dedikasi ilmiah para ilmuwan", "Ilmuwan tidak membutuhkan dukungan penguasa sama sekali", "Kekuasaan politik tidak berpengaruh pada kemajuan sains", "Karya ilmiah hanya bisa lahir di masa perang"], answer: 0 }
+        ],
+
+        "Bab 5 : Daulah Mamluk: Benteng Peradaban Islam Dengan Semangat Cinta Dan Keberanian": [
+            { question: "Apa arti harfiah dari kata 'Mamluk' dalam sejarah peradaban Islam?", options: ["Raja merdeka", "Budak yang dimiliki/diperjualbelikan (tentara bayaran/budak terlatih)", "Panglima perang senior", "Kaum pedagang keliling"], answer: 1 },
+            { question: "Siapakah tokoh perempuan cerdas yang menjadi penguasa pertama dari kalangan Mamluk di Mesir?", options: ["Shajar al-Durr", "Zubaidah", "Fatimah al-Fihri", "Aisyah al-Bawuniyah"], answer: 0 },
+            { question: "Secara historis, Daulah Mamluk di Mesir terbagi menjadi dua periode besar, yaitu Mamluk Bahri dan Mamluk...", options: ["Abbasiyah", "Umayyah", "Burji", "Fatimiyah"], answer: 2 },
+            { question: "Dari wilayah manakah mayoritas asal budak yang membentuk dinasti Mamluk Bahri pada periode pertama?", options: ["Kawasan Laut Kaspia / Turkistan (bangsa Turki)", "Afrika Barat", "Eropa Selatan", "India bagian utara"], answer: 0 },
+            { question: "Dari daerah manakah asal mayoritas budak yang mendirikan dinasti Mamluk Burji?", options: ["Sirkasia (Kaukasus)", "Persia", "Cina", "Arab Badui"], answer: 0 },
+            { question: "Pertempuran monumental tahun 1260 M di mana pasukan Mamluk berhasil menghentikan laju invasi pasukan Mongol untuk pertama kalinya adalah...", options: ["Perang Badar", "Perang Ain Jalut", "Pertempuran Hattin", "Perang Siffin"], answer: 1 },
+            { question: "Siapakah sultan Mamluk yang memimpin langsung kemenangan gemilang pasukan Islam dalam Perang Ain Jalut melawan bangsa Mongol?", options: ["Saif ad-Din Qutuz (bersama Baibars)", "Hulagu Khan", "Salahuddin al-Ayyubi", "Baibars al-Bunduqdari"], answer: 0 },
+            { question: "Sultan Mamluk periode pertama yang dianggap sebagai pembangun sejati dan peletak dasar kekuatan militer serta politik Mamluk adalah...", options: ["Qalawun", "Baybars (Baibars)", "Qutuz", "Barquq"], answer: 1 },
+            { question: "Apa peran strategis Daulah Mamluk dalam percaturan sejarah peradaban Islam di abad pertengahan?", options: ["Sebagai benteng pertahanan terakhir dunia Islam dari kehancuran total akibat serangan Mongol dan Tentara Salib", "Memonopoli seluruh tambang emas dunia", "Menutup total hubungan dagang dengan Eropa", "Menghapus seluruh warisan sains Abbasiyah"], answer: 0 },
+            { question: "Kebijakan politik penting apa yang diambil Daulah Mamluk setelah kota Baghdad dihancurkan oleh bangsa Mongol pada tahun 1258 M?", options: ["Menghidupkan kembali simbol kekhalifahan Abbasiyah dengan memindahkan keluarganya ke Kairo", "Membiarkan umat Islam tanpa pemimpin spiritual", "Mendirikan kerajaan baru di Eropa", "Menyerahkan kekuasaan pada Mongol"], answer: 0 },
+            { question: "Bagaimana sistem pengangkatan pemimpin atau suksesi kekuasaan yang berlaku pada masa Daulah Mamluk?", options: ["Berdasarkan garis keturunan mutlak monarki", "Berdasarkan meritokrasi militer, kemampuan kepemimpinan, dan kekuatan panglima", "Dipilih melalui pemilu terbuka", "Ditunjuk langsung oleh Paus Romawi"], answer: 1 },
+            { question: "Bentuk nyata semangat keberanian dan cinta tanah air yang ditunjukkan para pemimpin Mamluk tampak pada...", options: ["Sikap menyerah kepada musuh", "Keteguhan dan keberanian luar biasa dalam mempertahankan kedaulatan negeri-negeri Islam dari invasi luar", "Melarikan diri saat perang", "Menjual benteng pertahanan demi harta"], answer: 1 },
+            { question: "Dalam bidang arsitektur, Daulah Mamluk meninggalkan banyak mahakarya monumental di kota...", options: ["Baghdad", "Kairo (Mesir)", "Damaskus", "Cordoba"], answer: 1 },
+            { question: "Salah satu peninggalan arsitektur megah berupa masjid dan madrasah pada masa Daulah Mamluk di Kairo adalah...", options: ["Masjid Sultan Hasan", "Masjid Quba", "Qubbat ash-Sakhrah", "Masjid Cordoba"], answer: 0 },
+            { question: "Siapakah sultan Mamluk dari periode Burji yang terkenal sangat memperhatikan pembangunan arsitektur dan seni, serta namanya diabadikan pada mata uang Mesir lama?", options: ["Al-Ashraf Qaitbay", "Barsbay", "Tuman Bay", "Qansuh al-Ghawri"], answer: 0 },
+            { question: "Pencapaian militer gemilang lainnya dari Daulah Mamluk selain mengalahkan Mongol adalah...", options: ["Membersihkan sisa-sisa kantong kekuatan Tentara Salib di wilayah pesisir Syam/Palestina", "Menaklukkan seluruh benua Amerika", "Menguasai pulau Inggris", "Menyerang kekaisaran Jepang"], answer: 0 },
+            { question: "Bagaimana kondisi perekonomian Daulah Mamluk dapat berkembang sangat kuat di tengah konflik militer yang sering terjadi?", options: ["Melalui penguasaan jalur perdagangan strategis rempah-rempah internasional antara timur dan barat (Laut Merah)", "Mengandalkan hasil pertanian gandum semata", "Memungut pajak tanpa batas pada rakyat miskin", "Meminta bantuan dana dari bangsa Eropa"], answer: 0 },
+            { question: "Kapan Daulah Mamluk secara resmi runtuh setelah berkuasa selama lebih dari dua setengah abad?", options: ["1258 M", "1492 M", "1517 M", "1798 M"], answer: 2 },
+            { question: "Kekuatan imperialisme baru yang berhasil menaklukkan dan mengakhiri kekuasaan Daulah Mamluk di Mesir adalah...", options: ["Kesultanan Utsmaniyah (Ottoman) di bawah pimpinan Sultan Selim I", "Kekaisaran Mongol", "Tentara Napoleon Bonaparte", "Kerajaan Spanyol"], answer: 0 },
+            { question: "Ibrah atau pelajaran penting yang dapat dipetik dari sejarah Daulah Mamluk bagi generasi masa kini adalah...", options: ["Keberanian dalam membela kebenaran, persatuan barisan, serta kecintaan yang tulus pada agama dan tanah air mampu menyelamatkan peradaban dari kehancuran", "Kekuatan militer tidak memerlukan strategi", "Peradaban besar hanya lahir dari harta yang melimpah", "Ketakutan menghadapi masalah adalah jalan keselamatan"], answer: 0 }
+        ],
+
+        "Bab 1 : Sejarah Islam di Indonesia": [
+            { question: "Teori masuknya Islam ke Indonesia yang menyatakan bahwa Islam datang dari Gujarat (India) dipopulerkan oleh sejarawan...", options: ["Hamka", "Snouck Hurgronje", "Hoesein Djajadiningrat", "J.C. van Leur"], answer: 1 },
+            { question: "Teori yang menyatakan bahwa Islam di Indonesia berasal langsung dari tanah Arab (Makkah/Mesir) pada abad pertama Hijriah/abad ke-7 M didukung oleh...", options: ["Hamka (Buya Hamka)", "Snouck Hurgronje", "J. Pijnacker Hordijk", "T.W. Arnold"], answer: 0 },
+            { question: "Kerajaan Islam pertama di Nusantara yang terletak di pesisir utara pulau Sumatera adalah...", options: ["Kesultanan Malaka", "Kerajaan Samudera Pasai", "Kesultanan Demak", "Kerajaan Aceh Darussalam"], answer: 1 },
+            { question: "Siapakah nama asli Raja pertama Kerajaan Samudera Pasai yang setelah masuk Islam bergelar Malik al-Saleh?", options: ["Raden Patah", "Meurah Silu", "Sultan Iskandar Muda", "Fatahillah"], answer: 1 },
+            { question: "Penjelajah asal Venesia, Marco Polo, yang singgah di Sumatera pada tahun 1292 M mencatat bahwa di kota pelabuhan Pasai sebagian penduduknya sudah memeluk agama...", options: ["Hindu", "Buddha", "Islam", "Kristen"], answer: 2 },
+            { question: "Saluran utama dan paling awal yang digunakan dalam proses masuknya Islam ke Nusantara adalah jalur...", options: ["Perang dan penaklukan militer", "Perdagangan", "Politik dinastik", "Pendidikan formal istana"], answer: 1 },
+            { question: "Selain perdagangan, salah satu saluran islamisasi yang efektif di Nusantara adalah perkawinan antara saudagar muslim dengan...", options: ["Kaum bangsawan atau putri penguasa lokal", "Prajurit kerajaan asing", "Para pendeta agama lain", "Masyarakat nomaden pedalaman"], answer: 0 },
+            { question: "Penyebaran Islam di Pulau Jawa sangat identik dengan gerakan dakwah kelompok ulama penyebar Islam yang dikenal dengan sebutan...", options: ["Wali Songo", "Khulafaurrasyidin", "Sahabat Anshar", "Kaum Mawali"], answer: 0 },
+            { question: "Kerajaan Islam pertama di Pulau Jawa yang didirikan atas restu para Wali Songo adalah...", options: ["Kesultanan Banten", "Kesultanan Demak", "Kerajaan Mataram Islam", "Kesultanan Cirebon"], answer: 1 },
+            { question: "Siapakah pendiri sekaligus raja pertama Kesultanan Demak?", options: ["Sultan Trenggana", "Raden Patah", "Sunan Ampel", "Pangeran Diponegoro"], answer: 1 },
+            { question: "Wali Songo yang terkenal menggunakan media kesenian wayang kulit sebagai sarana dakwah Islam di Jawa adalah...", options: ["Sunan Ampel", "Sunan Bonang", "Sunan Kalijaga", "Sunan Giri"], answer: 2 },
+            { question: "Wali yang berperan besar dalam mendirikan pusat pemerintahan Islam di Cirebon dan Banten serta bergelar Sunan Gunung Jati adalah...", options: ["Syarif Hidayatullah", "Raden Rahmat", "Raden Paku", "Ja'far Sadiq"], answer: 0 },
+            { question: "Pusat penyebaran agama Islam di wilayah Sulawesi Selatan diawali melalui interaksi dengan kerajaan...", options: ["Kerajaan Gowa-Tallo", "Kerajaan Bone", "Kerajaan Luwu", "Kerajaan Wajo"], answer: 0 },
+            { question: "Raja Gowa pertama yang masuk Islam dan mengubah status kerajaannya menjadi kesultanan dengan gelar Sultan Alauddin adalah...", options: ["Karaeng Matoaya", "Daeng Manrabia", "Sultan Hasanuddin", "Arung Palakka"], answer: 1 },
+            { question: "Kerajaan Islam di wilayah Indonesia bagian timur yang terkenal sebagai pusat rempah-rempah dan kekuatan maritim adalah...", options: ["Ternate dan Tidore", "Bima dan Dompu", "Kutai Kartanegara", "Banjar"], answer: 0 },
+            { question: "Akulturasi budaya lokal dengan Islam di Indonesia dapat dilihat melalui tradisi upacara Sekaten di Jawa yang diselenggarakan untuk memperingati...", options: ["Hari Raya Idul Fitri", "Maulid Nabi Muhammad SAW", "Tahun Baru Hijriah", "Isra Mikraj"], answer: 1 },
+            { question: "Mengapa pendekatan para sufi sangat diterima dengan baik oleh masyarakat Nusantara pada awal masuknya Islam?", options: ["Karena mereka mengajarkan tasawuf dengan menyesuaikan tradisi, bahasa, dan kearifan lokal", "Karena mereka membawa pasukan militer yang besar", "Karena mereka melarang segala bentuk adat istiadat", "Karena mereka menjanjikan kekayaan material"], answer: 0 },
+            { question: "Raja terbesar dari Kesultanan Mataram Islam yang memadukan unsur tradisi Jawa dengan hukum Islam adalah...", options: ["Sultan Agung Hanyakrakusuma", "Amangkurat I", "Panembahan Senopati", "Pangeran Puger"], answer: 0 },
+            { question: "Kitab undang-undang hukum maritim yang berlaku di pelabuhan-pelabuhan Islam Nusantara awal, seperti di Malaka, dikenal dengan nama...", options: ["Undang-Undang Laut Melaka", "Kitab Negarakertagama", "Kitab Sutasoma", "Hukum Adat Temenggung"], answer: 0 },
+            { question: "Ibrah atau pelajaran penting dari sejarah masuk dan berkembangnya Islam di Indonesia adalah...", options: ["Islam masuk secara damai, melalui proses dialog, akulturasi budaya, dan perdagangan yang menjunjung tinggi toleransi serta kearifan lokal", "Penyebaran agama hanya bisa dilakukan dengan paksaan senjata", "Budaya lokal harus dihancurkan seluruhnya tanpa sisa", "Perdagangan tidak memiliki hubungan sama sekali dengan agama"], answer: 0 }
+        ],
+
+        "Bab 2 : Kerajaan Islam di Indonesia": [
+            { question: "Raja Samudera Pasai yang pada masa pemerintahannya dikunjungi oleh musafir terkenal Ibnu Batutah pada abad ke-14 adalah...", options: ["Sultan Malik al-Saleh", "Sultan Malik al-Zahir", "Sultan Iskandar Muda", "Sultan Trenggana"], answer: 1 },
+            { question: "Masa keemasan dan kejayaan Kesultanan Aceh Darussalam berada di bawah kepemimpinan sultan...", options: ["Sultan Ali Mughayat Syah", "Sultan Iskandar Muda", "Sultan Iskandar Thani", "Sultan Alaudin Riayat Syah"], answer: 1 },
+            { question: "Kesultanan Aceh Darussalam mendapat julukan sebagai 'Serambi...' karena perannya yang penting sebagai pusat peradaban dan penyebaran agama Islam.", options: ["Madinah", "Makkah", "Mesir", "Baghdad"], answer: 1 },
+            { question: "Kesultanan Demak mencapai puncak kejayaannya di bidang militer dan ekspansi teritorial pada masa pemerintahan...", options: ["Raden Patah", "Pati Unus", "Sultan Trenggana", "Pangeran Sabrang Lor"], answer: 2 },
+            { question: "Panglima perang Kesultanan Demak yang terkenal karena keberaniannya memimpin armada laut menyerang kedudukan Portugis di Malaka dijuluki sebagai Pangeran...", options: ["Sabrang Lor", "Benawa", "Seda ing Margi", "Pekik"], answer: 0 },
+            { question: "Pendiri Kesultanan Mataram Islam yang merintis kekuasaan dari wilayah hutan Mentaok adalah...", options: ["Sutawijaya (Panembahan Senopati)", "Sultan Agung", "Amangkurat I", "Sultan Hadiwijaya"], answer: 0 },
+            { question: "Sistem penanggalan ciptaan Sultan Agung dari Mataram Islam yang memadukan sistem kalender Saka (Hindu) dengan Hijriah (Islam) adalah...", options: ["Kalender Masehi", "Kalender Jawa (Tahun Jawa)", "Kalender Imlek", "Kalender Julian"], answer: 1 },
+            { question: "Kesultanan Banten yang menjadi pusat perdagangan maritim internasional yang maju didirikan oleh...", options: ["Fatahillah", "Sunan Gunung Jati bersama putranya Maulana Hasanuddin", "Raden Patah", "Sultan Ageng Tirtayasa"], answer: 1 },
+            { question: "Sultan Banten yang terkenal gigih menentang VOC Belanda, membangun irigasi, dan memajukan perekonomian Banten adalah...", options: ["Sultan Ageng Tirtayasa", "Sultan Haji", "Sultan Maulana Yusuf", "Sultan Abdul Mufakhir"], answer: 0 },
+            { question: "Kerajaan Gowa-Tallo di Sulawesi Selatan terkenal sebagai kerajaan maritim dan pusat perdagangan transito karena letaknya yang sangat strategis di kawasan...", options: ["Laut Jawa", "Selat Malaka", "Pelabuhan Makassar (Indonesia Bagian Timur)", "Laut Cina Selatan"], answer: 2 },
+            { question: "Perjanjian yang merugikan Kesultanan Gowa-Tallo dan memaksa Sultan Hasanuddin menandatangani monopoli perdagangan dengan VOC adalah...", options: ["Perjanjian Bongaya", "Perjanjian Hudaibiyah", "Perjanjian Salatiga", "Perjanjian Giyanti"], answer: 0 },
+            { question: "Kesultanan Ternate dan Tidore di Maluku sangat terkenal di dunia internasional karena menjadi pusat penghasil komoditas rempah-rempah utama berupa...", options: ["Lada dan kopi", "Cengkih dan pala", "Kayu manis dan vanili", "Teh dan tembakau"], answer: 1 },
+            { question: "Persekutuan lima wilayah kekuasaan Islam di Maluku yang dipimpin oleh Kesultanan Ternate dikenal dengan sebutan...", options: ["Uli Lima", "Uli Siwa", "Maluku Kie Raha", "Pitu Babullah"], answer: 0 },
+            { question: "Persekutuan sembilan wilayah kekuasaan di Maluku yang dipimpin oleh Kesultanan Tidore dinamakan...", options: ["Uli Lima", "Uli Siwa", "Kie Raha", "Pitu Amang"], answer: 1 },
+            { question: "Kesultanan Banjar merupakan salah satu kerajaan Islam terbesar yang terletak di pulau...", options: ["Jawa", "Sumatra", "Kalimantan", "Sulawesi"], answer: 2 },
+            { question: "Sultan pertama Kesultanan Banjar yang memeluk Islam dengan bantuan militer dari Kesultanan Demak adalah...", options: ["Pangeran Antasari", "Sultan Suriansyah", "Lambung Mangkurat", "Sultan Adam"], answer: 1 },
+            { question: "Kerajaan Islam pertama di Kalimantan Timur yang masuk Islam pada masa pemerintahan Raja Mahkota adalah...", options: ["Kutai Martadipura", "Kesultanan Kutai Kartanegara ing Martadipura", "Kerajaan Berau", "Kesultanan Paser"], answer: 1 },
+            { question: "Faktor eksternal utama yang melemahkan dan menyebabkan keruntuhan sebagian besar kerajaan-kerajaan Islam di Nusantara adalah...", options: ["Bencana alam gempa bumi", "Politik devide et impera (pecah belah) serta monopoli kolonial oleh bangsa Eropa", "Kekurangan bahan pangan global", "Migrasi penduduk massal ke luar negeri"], answer: 1 },
+            { question: "Peran penting kerajaan-kerajaan Islam di Nusantara dalam sejarah kebangsaan Indonesia adalah...", options: ["Memperkuat perpecahan antar suku daerah", "Menyatukan berbagai wilayah melalui jaringan maritim, perdagangan, dan ikatan keagamaan melawan kolonialisme", "Menutup total hubungan luar negeri secara permanen", "Menghapuskan seluruh sistem kebudayaan asli"], answer: 1 },
+            { question: "Nilai keteladanan (*ibrah*) utama dari sejarah perjuangan kerajaan-kerajaan Islam di Indonesia adalah...", options: ["Semangat pantang menyerah, ukhuwah (persatuan), kedaulatan bangsa, serta kecintaan terhadap tanah air", "Sikap egoisme sektoral antar wilayah", "Kepasrahan total pada kekuasaan asing", "Ketergantungan ekonomi pada pihak luar"], answer: 0 }
+        ],
+
+        "Bab 3 : Peran Pesantren dalam Dakwah Islam di Indonesia": [
+            { question: "Apa unsur utama dan khas yang harus ada dalam sebuah lembaga pendidikan pesantren tradisional?", options: ["Pusat perbelanjaan dan pabrik", "Kiai, santri, pondok, masjid, dan pengajaran kitab kuning", "Lapangan sepak bola dan gedung bioskop", "Kantor pemerintahan dan pos militer"], answer: 1 },
+            { question: "Siapakah pemimpin atau figur sentral pengasuh di sebuah lembaga pesantren?", options: ["Gubernur", "Kiai atau Ajengan", "Panglima Perang", "Kepala Desa"], answer: 1 },
+            { question: "Sebutan bagi para siswa atau anak didik yang menimba ilmu dan tinggal di lingkungan pesantren adalah...", options: ["Mahasiswa", "Santri", "Taruna", "Praktikan"], answer: 1 },
+            { question: "Kitab-kitab klasik keislaman berbahasa Arab tanpa harakat yang menjadi kurikulum utama di pesantren sering disebut sebagai...", options: ["Kitab Suci", "Kitab Kuning", "Kitab Putih", "Buku Paket Modern"], answer: 1 },
+            { question: "Metode pengajaran tradisional di pesantren di mana santri membaca di hadapan kiai secara bergantian satu per satu disebut metode...", options: ["Bandongan", "Sorogan", "Diskusi kelompok", "Ceramah massal"], answer: 1 },
+            { question: "Metode pengajaran di mana kiai membaca dan menjelaskan kitab sementara para santri menyimak dan mencatat di kitab masing-masing dinamakan metode...", options: ["Sorogan", "Bandongan (Wetonan)", "Ekperimen laboratorium", "Praktik lapangan"], answer: 1 },
+            { question: "Bagaimanakah peran historis pesantren dalam proses penyebaran dakwah Islam di Nusantara sejak masa Wali Songo?", options: ["Sebagai benteng pertahanan asing", "Sebagai pusat kaderisasi ulama dan basis penyebaran Islam secara damai ke masyarakat", "Sebagai tempat pelatihan militer penjajah", "Sebagai pusat perdagangan rempah monopoli"], answer: 1 },
+            { question: "Peran heroik apa yang ditunjukkan oleh kalangan pesantren dalam mempertahankan kemerdekaan Republik Indonesia dari ancaman agresi militer?", options: ["Menyerahkan wilayah kepada sekutu", "Mengeluarkan Resolusi Jihad dan mengerahkan laskar santri ke medan pertempuran", "Menolak terlibat dalam urusan politik negara", "Membubarkan diri saat terjadi perang"], answer: 1 },
+            { question: "Tokoh ulama besar pendiri NU sekaligus pengasuh Pesantren Tebuireng yang menginisiasi fatwa Resolusi Jihad tahun 1945 adalah...", options: ["KH. Hasyim Asy'ari", "KH. Ahmad Dahlan", "KH. Wahid Hasyim", "Sultan Agung"], answer: 0 },
+            { question: "Tanggal berapakah yang ditetapkan pemerintah Indonesia sebagai Hari Santri Nasional untuk mengenang jasa para santri dan ulama?", options: ["17 Agustus", "22 Oktober", "10 November", "1 Juni"], answer: 1 },
+            { question: "Bagaimana bentuk adaptasi pesantren di era modern dalam menghadapi perkembangan zaman?", options: ["Menutup diri dari teknologi", "Mengintegrasikan kurikulum ilmu agama tradisional dengan ilmu pengetahuan umum serta keterampilan", "Mengubah total pesantren menjadi pabrik industri", "Menghapus pengajaran kitab kuning secara permanen"], answer: 1 },
+            { question: "Nilai karakter utama apa yang ditanamkan secara mendalam kepada para santri selama tinggal di pondok pesantren?", options: ["Kemandirian, kedisiplinan, kesederhanaan, dan tawadu (rendah hati)", "Sikap individualis dan konsumtif", "Ketergantungan penuh pada orang lain", "Gelar kehormatan duniawi"], answer: 0 },
+            { question: "Selain sebagai pusat pendidikan agama, apa fungsi sosial kemasyarakatan dari sebuah pesantren?", options: ["Menjadi tempat pemecahan masalah umat, penggerak sosial, dan penjaga moral bangsa", "Menjadi pusat perjudian legal", "Menjadi markas partai politik ekstrem", "Menutup akses interaksi dengan warga sekitar"], answer: 0 },
+            { question: "Apa makna penting dari tradisi menghormati kiai dan guru (*takdim*) di lingkungan pesantren?", options: ["Bentuk kultus individu yang berlebihan", "Bentuk adab dan akhlak mulia dalam mencari ilmu agar mendatangkan berkah", "Syarat mutlak untuk mendapatkan kekayaan", "Aturan birokrasi kaku tanpa makna"], answer: 1 },
+            { question: "Bagaimana kontribusi pesantren dalam menjaga keutuhan Negara Kesatuan Republik Indonesia (NKRI)?", options: ["Mengajarkan nasionalisme, cinta tanah air (*hubbul wathan minal iman*), dan menjaga kerukunan", "Mendorong perpecahan antar suku", "Memisahkan diri dari sistem pemerintahan nasional", "Menolak dasar negara Pancasila"], answer: 0 },
+            { question: "Istilah bagi unit usaha mandiri atau koperasi yang sering dikembangkan di lingkungan pesantren untuk melatih jiwa wirausaha santri adalah...", options: ["Koperasi Pesantren / BMT Pesantren", "Bank Sentral Internasional", "Pusat Perbelanjaan Mewah", "Pasar Gelap Nasional"], answer: 0 },
+            { question: "Apa peran strategis pesantren modern (*khalafiyah*) dibandingkan pesantren salaf tradisional?", options: ["Menghilangkan seluruh tradisi lama", "Memadukan sistem pendidikan sorogan/bandongan dengan sekolah formal berijazah resmi (SMP/SMA/Madrasah)", "Hanya mengajarkan bahasa asing tanpa ilmu agama", "Fokus pada olahraga prestasi semata"], answer: 1 },
+            { question: "Apa alasan utama mengapa masyarakat luas sangat mempercayai pesantren sebagai tempat pendidikan anak-anak mereka?", options: ["Karena menjamin kekayaan instan", "Karena pesantren memberikan perlindungan moral, pembinaan akidah, dan pembentukan akhlak karimah secara intensif 24 jam", "Karena biayanya sangat mahal", "Karena lokasinya di perkotaan besar"], answer: 1 },
+            { question: "Pesantren tidak hanya melahirkan pemuka agama, tetapi juga melahirkan tokoh-tokoh nasional di berbagai bidang seperti...", options: ["Politisi, sastrawan, pahlawan nasional, pemimpin negara, dan teknokrat", "Hanya atlet profesional", "Hanya pedagang pasar malam", "Hanya artis hiburan"], answer: 0 },
+            { question: "Ibrah atau pelajaran terpenting dari eksistensi pesantren dalam dakwah Islam di Indonesia adalah...", options: ["Pesantren adalah jantung peradaban Islam yang konsisten menjaga integritas moral, keilmuan, dan nasionalisme bangsa", "Lembaga pendidikan tertinggal yang harus ditinggalkan", "Tempat eksklusif bagi golongan tertentu saja", "Pusat kegiatan politik praktis semata"], answer: 0 }
+        ], 
+
+        "Bab 4 : Nilai-Nilai Islam dan Kearifan Lokal": [
+            { question: "Apa yang dimaksud dengan hubungan antara nilai-nilai Islam dan kearifan lokal di Indonesia?", options: ["Pertentangan mutlak antara agama dan adat", "Peleburan dan akulturasi secara harmonis tanpa menghilangkan esensi ajaran Islam", "Penghapusan total budaya lama secara paksa", "Penolakan terhadap segala bentuk tradisi masyarakat"], answer: 1 },
+            { question: "Prinsip hukum Islam yang menyatakan bahwa adat kebiasaan masyarakat dapat dijadikan sebagai sumber hukum selama tidak bertentangan dengan syariat adalah...", options: ["Al-Urf al-Shahih (Al-Adah Muhakkamah)", "Al-Qiyas al-Jali", "Al-Ijma' Sukuti", "Al-Istishhab"], answer: 0 },
+            { question: "Tradisi ziarah kubur menjelang bulan Ramadhan yang dipadukan dengan pembersihan makam leluhur dan doa bersama di pulau Jawa dikenal dengan nama...", options: ["Sekaten", "Nyadran (Sadranan)", "Grebeg", "Larung Sesaji"], answer: 1 },
+            { question: "Bentuk kearifan lokal di Maluku yang mempererat persaudaraan antarumat beragama melalui ikatan persaudaraan antardesa dinamakan...", options: ["Pela dan Gandong", "Mappadendang", "Barapen", "Ammatoa"], answer: 0 },
+            { question: "Bagaimana strategi dakwah para Wali Songo dalam menghadapi budaya lokal masyarakat Nusantara pada masa lalu?", options: ["Menghancurkan seluruh tradisi secara radikal", "Melakukan pendekatan kultural, dialog, dan memasukkan nilai Islam ke dalam budaya lokal", "Mengisolasi umat Islam dari interaksi sosial masyarakat umum", "Melarang penggunaan bahasa dan seni daerah"], answer: 1 },
+            { question: "Konsep falsafah hidup masyarakat Bugis-Makassar yang menjunjung tinggi harga diri, kejujuran, dan solidaritas sosial bernafaskan Islam disebut...", options: ["Tri Hita Karana", "Siri' na Pacce", "Subak", "Pamali"], answer: 1 },
+            { question: "Tradisi pembuatan bubur Asyura yang dibagikan kepada masyarakat pada tanggal 10 Muharam di berbagai daerah di Indonesia merupakan contoh dari...", options: ["Akulturasi tradisi lokal dengan syi'ar hari besar Islam", "Peninggalan budaya pra-Hindu murni", "Upacara penyembahan kekuatan alam", "Ritual mistis terlarang"], answer: 0 },
+            { question: "Mengapa para ulama Nusantara terdahulu sangat menghargai kearifan lokal (*local wisdom*) dalam berdakwah?", options: ["Agar ajaran Islam mudah dipahami, diterima, dan dihayati tanpa memicu penolakan kultural", "Karena ulama tidak memiliki aturan baku dalam beragama", "Supaya budaya lokal punah dengan sendirinya seiring waktu", "Mengikuti perintah politik bangsa penjajah"], answer: 0 },
+            { question: "Tradisi lokal tertentu yang mengandung unsur leluhur dapat diislamkan oleh para wali dan ulama dengan cara...", options: ["Menghilangkan unsur syirik/mistis dan meluruskan niat semata-mata karena Allah SWT", "Membiarkannya berjalan tanpa pengawasan agama", "Melarang keras semua bentuk tradisi tanpa terkecuali", "Menjadikannya ajang hiburan komersial semata"], answer: 0 },
+            { question: "Kearifan lokal dalam pengelolaan lingkungan hidup dan pelestarian hutan di masyarakat Sunda tradisional sering dikaitkan dengan konsep...", options: ["Leuweung Larangan / Titip di Gunung", "Sistem Monokultur Pertanian", "Penebangan Hutan Bebas", "Irigasi Teknis Modern"], answer: 0 },
+            { question: "Salah satu bentuk ekspresi seni lokal di Jawa yang digubah oleh Sunan Kalijaga untuk menyampaikan ajaran moral dan ketauhidan adalah...", options: ["Wayang kulit dengan lakon bernuansa tauhid dan nilai Islami", "Tari modern kontemporer", "Teater drama asing", "Musik orkestra klasik"], answer: 0 },
+            { question: "Sikap gotong royong dan kerja bakti bersama dalam membangun fasilitas umum di pedesaan Indonesia sejalan dengan konsep ajaran Islam yaitu...", options: ["Ta'awun (tolong-menolong dalam kebaikan)", "Tabdzir (pemborosan)", "Israf (berlebih-lebihan)", "Istiqamah (konsisten)"], answer: 0 },
+            { question: "Apa batas utama atau filter yang digunakan oleh para ulama dalam menilai apakah suatu kearifan lokal boleh dilestarikan atau harus ditinggalkan?", options: ["Apakah tradisi tersebut bertentangan dengan akidah tauhid dan hukum syariat Islam", "Apakah tradisi tersebut populer di kalangan pejabat tinggi", "Apakah tradisi tersebut mendatangkan keuntungan materi yang besar", "Apakah tradisi tersebut berasal dari kebudayaan barat"], answer: 0 },
+            { question: "Tradisi 'Halalbihalal' yang unik dan hanya ada di Indonesia pada saat perayaan Hari Raya Idulfitri merupakan hasil kreasi dari...", options: ["Para ulama Nusantara untuk mempererat silaturahmi dan meredakan ketegangan politik masa lalu", "Budaya asli bangsa Eropa abad pertengahan", "Peninggalan masa prasejarah megalitikum", "Tradisi kerajaan istana Hindu murni"], answer: 0 },
+            { question: "Bagaimana peran kearifan lokal dalam memperkokoh integrasi nasional dan kerukunan umat beragama di Indonesia?", options: ["Kearifan lokal menjadi perekat sosial yang mengajarkan toleransi, harmoni, dan rasa kekeluargaan", "Kearifan lokal sengaja diciptakan untuk memecah belah bangsa", "Kearifan lokal menghambat proses modernisasi negara", "Kearifan lokal tidak memiliki fungsi sosial sama sekali"], answer: 0 },
+            { question: "Istilah dalam hukum Islam bagi adat istiadat yang baik dan sejalan dengan nilai-nilai agama disebut sebagai...", options: ["Al-Urf al-Shahih", "Al-Urf al-Fasid", "Bid'ah Dhalalah", "Khurafat"], answer: 0 },
+            { question: "Tradisi pembacaan kitab Maulid (seperti Barzanji atau Simthud Durar) di berbagai kampung di Indonesia mencerminkan perpaduan antara...", options: ["Kecintaan kepada Nabi Muhammad SAW dengan seni sastra dan tradisi ekspresi lokal", "Budaya asing yang dipaksakan kepada rakyat", "Kesenian modern luar negeri", "Upacara adat istiadat pertanian kuno"], answer: 0 },
+            { question: "Apa dampak positif dari masuknya nilai-nilai Islam ke dalam struktur kearifan lokal Nusantara?", options: ["Memurnikan tradisi dari unsur-unsur yang bertentangan dengan tauhid sekaligus melestarikan bentuk budayanya", "Menghilangkan identitas budaya lokal secara total tanpa sisa", "Membuat masyarakat membenci ajaran agama", "Menimbulkan konflik horizontal antar suku"], answer: 0 },
+            { question: "Sikap yang bijak bagi seorang pelajar Muslim terhadap keragaman kearifan lokal di tanah air adalah...", options: ["Menghargai, melestarikan nilai-nilai positifnya, serta menyaringnya berdasarkan norma agama", "Mencela seluruh budaya lokal yang berbeda dari daerahnya", "Menolak semua tradisi warisan leluhur nenek moyang", "Menganggap budaya sendiri sebagai satu-satunya yang benar"], answer: 0 },
+            { question: "Ibrah atau pelajaran penting dari perpaduan harmonis antara nilai-nilai Islam dan kearifan lokal adalah...", options: ["Islam itu ramah, fleksibel dalam hal budaya (*rahmatan lil 'alamin*), serta mampu membangun peradaban tanpa menghapus identitas lokal", "Agama dan budaya selamanya tidak bisa disatukan dalam bentuk apapun", "Budaya lokal jauh lebih penting daripada akidah keimanan", "Agama harus memaksakan budaya luar daerah asalnya"], answer: 0 }
+        ], 
+
+        "Bab 5 : Walisanga dalam Dakwah Islam di Indonesia": [
+            { question: "Siapakah anggota Walisanga yang dikenal sebagai wali paling senior dan dianggap sebagai sesepuh serta perintis awal dakwah Islam di tanah Jawa?", options: ["Sunan Ampel", "Maulana Malik Ibrahim (Sunan Gresik)", "Sunan Kalijaga", "Sunan Giri"], answer: 1 },
+            { question: "Siapakah nama asli dari Sunan Ampel, salah satu tokoh utama perumus berdirinya Kesultanan Demak?", options: ["Raden Rahmat", "Raden Paku", "Raden Said", "Raden Qasim"], answer: 0 },
+            { question: "Di kota manakah pusat pesantren dan basis dakwah utama Sunan Ampel berada?", options: ["Ampeldenta, Surabaya", "Giri, Gresik", "Kudus", "Cirebon"], answer: 0 },
+            { question: "Siapakah nama asli dari Sunan Giri yang juga memimpin pusat pemerintahan mandiri Giri Kedaton?", options: ["Raden Paku (Ainul Yaqin)", "Raden Umar Said", "Raden Mas Syahid", "Syarif Hidayatullah"], answer: 0 },
+            { question: "Media dakwah apa yang sangat terkenal diciptakan dan digunakan oleh Sunan Giri untuk menarik minat anak-anak dan masyarakat?", options: ["Tembang dolanan anak (seperti 'Padhang Bulan' dan 'Jor Joran') serta permainan tradisional", "Wayang orang militer", "Teater drama modern", "Orkestra musik barat"], answer: 0 },
+            { question: "Siapakah nama asli Sunan Bonang, putra dari Sunan Ampel yang terkenal sebagai musikus ulung dakwah?", options: ["Makhdum Ibrahim", "Umar Said", "Qasim", "Jafar Sadiq"], answer: 0 },
+            { question: "Tembang sufi ciptaan Sunan Bonang yang sangat legendaris untuk menggugah kesadaran spiritual dan mengobati penyakit hati adalah...", options: ["Tombo Ati", "Ilir-Ilir", "Gundul Pacul", "Kebo Giro"], answer: 0 },
+            { question: "Siapakah nama asli dari Sunan Kalijaga, wali yang sangat populer menggunakan pendekatan seni budaya lokal?", options: ["Raden Mas Syahid (Raden Said)", "Raden Paku", "Raden Rahmat", "Maulana Malik Ibrahim"], answer: 0 },
+            { question: "Apa media seni budaya utama yang digunakan oleh Sunan Kalijaga dalam menyampaikan pesan-pesan tauhid dan moral Islam?", options: ["Wayang kulit", "Pencak silat istana", "Seni pahat batu besar", "Tari balet klasik"], answer: 0 },
+            { question: "Siapakah nama asli dari Sunan Drajat yang fokus dakwahnya sangat menonjol pada bidang kepedulian sosial, kemanusiaan, dan pemberdayaan fakir miskin?", options: ["Raden Qasim (Syarifuddin)", "Raden Umar Said", "Raden Paku", "Jafar Sadiq"], answer: 0 },
+            { question: "Tembang macapat karya Sunan Drajat yang memuat filosofi luhur tentang kepedulian sosial dan solidaritas antar sesama adalah tembang...", options: ["Pangkur", "Dandanggula", "Kinanthi", "Asmarandana"], answer: 0 },
+            { question: "Siapakah nama asli dari Sunan Kudus yang dikenal luas sebagai ahli hukum Islam (*fakih*) dan panglima perang?", options: ["Ja'far Sadiq", "Umar Said", "Syarif Hidayatullah", "Raden Rahmat"], answer: 0 },
+            { question: "Keunikan arsitektur Masjid Menara Kudus yang dibangun oleh Sunan Kudus mencerminkan wujud nyata dari...", options: ["Akulturasi budaya Islam dengan corak Hindu-Buddha/lokal", "Pengaruh arsitektur gaya Eropa modern", "Gaya bangunan istana Persia kuno", "Bentuk benteng pertahanan militer Romawi"], answer: 0 },
+            { question: "Mengapa Sunan Kudus melarang masyarakat setempat menyembelih sapi pada hari raya tertentu?", options: ["Sebagai bentuk penghormatan dan toleransi tinggi terhadap masyarakat penganut Hindu", "Karena daging sapi dilarang dalam syariat Islam", "Karena jumlah sapi di Kudus sangat sedikit", "Karena sapi adalah hewan peliharaan pribadi sultan"], answer: 0 },
+            { question: "Siapakah nama asli dari Sunan Muria, putra Sunan Kalijaga yang memilih berdakwah di daerah pegunungan terpencil?", options: ["Raden Umar Said", "Raden Qasim", "Raden Paku", "Ja'far Sadiq"], answer: 0 },
+            { question: "Bagaimana karakteristik pendekatan dakwah yang dilakukan oleh Sunan Muria kepada masyarakat bawah (petani, pedagang kecil, dan nelayan)?", options: ["Baur dan bergaul langsung di tengah masyarakat pedesaan serta memanfaatkan tradisi lokal", "Menutup diri di dalam istana mewah", "Menggunakan kekuasaan militer paksaan", "Hanya berdakwah kepada para bangsawan istana"], answer: 0 },
+            { question: "Siapakah nama asli dari Sunan Gunung Jati yang mendirikan Kesultanan Cirebon dan Banten?", options: ["Syarif Hidayatullah", "Raden Rahmat", "Raden Paku", "Ja'far Sadiq"], answer: 0 },
+            { question: "Apa peran strategis Sunan Gunung Jati dalam peta politik dan dakwah Islam di wilayah Nusantara bagian barat?", options: ["Menyatukan jalur perdagangan pesisir barat Jawa dan mendirikan pusat pemerintahan Islam yang mandiri", "Menutup total hubungan dagang dengan luar negeri", "Menjadi panglima perang kerajaan Hindu Sunda", "Menghapus seluruh kebudayaan lokal Sunda"], answer: 0 },
+            { question: "Strategi utama apa yang selalu dipegang teguh oleh para anggota Walisanga dalam menghadapi masyarakat Nusantara yang majemuk?", options: ["Dakwah dengan hikmah, keteladanan akhlak (*uswatun hasanah*), damai, tanpa paksaan, dan merangkul budaya", "Penyebaran agama dengan kekuatan senjata dan intimidasi", "Isolasi total dari pergaulan masyarakat umum", "Menghilangkan identitas suku bangsa secara paksa"], answer: 0 },
+            { question: "Ibrah atau hikmah terbesar dari sejarah perjuangan Walisanga bagi umat Islam di Indonesia adalah...", options: ["Keberhasilan dakwah lahir dari keluhuran akhlak, kearifan lokal, kesabaran, serta strategi yang mencerminkan sifat rahmatan lil 'alamin", "Islam dapat disebarkan dengan mudah tanpa usaha keras", "Budaya lokal sama sekali tidak boleh dicampur dengan agama", "Tokoh agama harus menjauhi kehidupan sosial masyarakat"], answer: 0 }
+        ],
+
+        "Bab 6 : Syaikh Abdur Rauf As-Singkili & Syaikh Muhammad Arsyad Al-Banjari": [
+            { question: "Dari daerah manakah asal ulama besar Syaikh Abdur Rauf As-Singkili?", options: ["Singkil, Aceh", "Minangkabau, Sumatra Barat", "Banjarmasin, Kalimantan", "Palembang, Sumatra Selatan"], answer: 0 },
+            { question: "Jabatan keagamaan penting apa yang pernah diemban oleh Syaikh Abdur Rauf As-Singkili di Kesultanan Aceh?", options: ["Panglima Perang Utama", "Mufti Agung / Qadi Malikul Adil", "Sultan Aceh", "Bendahara Kerajaan"], answer: 1 },
+            { question: "Apa judul kitab tafsir Al-Quran berbahasa Melayu lengkap pertama yang disusun oleh Syaikh Abdur Rauf As-Singkili?", options: ["Tafsir Al-Maraghi", "Tarjuman al-Mustafid", "Tafsir Al-Azhar", "Tafsir Ibnu Katsir"], answer: 1 },
+            { question: "Tarekat sufi utama yang dipelajari dan disebarkan oleh Syaikh Abdur Rauf As-Singkili di Nusantara adalah tarekat...", options: ["Qadiriyah", "Naqsabandiyah", "Syattariyah", "Tijaniyah"], answer: 2 },
+            { question: "Siapakah nama guru besar Syaikh Abdur Rauf As-Singkili di Madinah yang memberikan ijazah keulamaan dan tarekat?", options: ["Ahmad al-Qushashi dan Ibrahim al-Kurani", "Ibnu Taimiyah dan Ibnul Qayyim", "Muhammad bin Abdul Wahhab", "Al-Ghazali dan Al-Asy'ari"], answer: 0 },
+            { question: "Bagaimana pandangan tasawuf Syaikh Abdur Rauf As-Singkili dalam meredakan konflik pemikiran ekstrem mengenai konsep Wujudiyah?", options: ["Mendukung paham panteisme mutlak tanpa batas", "Menyelaraskan tasawuf yang benar dengan batasan syariat Islam (moderat)", "Menolak semua bentuk tasawuf secara total", "Membubarkan kelompok pengkaji agama"], answer: 1 },
+            { question: "Dari wilayah manakah Syaikh Muhammad Arsyad Al-Banjari berasal?", options: ["Martapura, Kalimantan Selatan", "Pontianak, Kalimantan Barat", "Samarinda, Kalimantan Timur", "Palangka Raya, Kalimantan Tengah"], answer: 0 },
+            { question: "Berapa lama perkiraan waktu yang dihabiskan oleh Syaikh Muhammad Arsyad Al-Banjari untuk menimba ilmu di Tanah Suci (Makkah dan Madinah)?", options: ["Sekitar 3 tahun", "Sekitar 10 tahun", "Sekitar 30 tahun", "Sekitar 50 tahun"], answer: 2 },
+            { question: "Apa judul kitab fikih mazhab Syafi'i paling monumental dan fenomenal karya Syaikh Muhammad Arsyad Al-Banjari?", options: ["Sabil al-Muhtadin", "Fath al-Qarib", "Minhaj al-Talibin", "Al-Muwatha'"], answer: 0 },
+            { question: "Sekembalinya ke tanah air, pusat pendidikan Islam yang didirikan oleh Syaikh Muhammad Arsyad Al-Banjari di Martapura dikenal dengan nama...", options: ["Pesantren Tebuireng", "Kampung Dalam Pagar", "Pesantren Gontor", "Madrasah Nizamiyah"], answer: 1 },
+            { question: "Peran penting apa yang dijalankan oleh Syaikh Muhammad Arsyad Al-Banjari di Kesultanan Banjar setelah pulang dari Makkah?", options: ["Menjadi panglima militer perang", "Menjadi mufti kerajaan, menata hukum Islam, dan membimbing pengadilan agama", "Memonopoli perdagangan intan", "Menjadi sultan pengganti"], answer: 1 },
+            { question: "Apa judul kitab karya Syaikh Muhammad Arsyad Al-Banjari yang membahas tentang akidah Ahlussunnah wal Jamaah dan meluruskan penyimpangan keyakinan?", options: ["Tuhfat al-Raghibin", "Al-Hawi fi at-Tibb", "Kifayat al-Akhyar", "Safinah al-Najah"], answer: 0 },
+            { question: "Syaikh Muhammad Arsyad Al-Banjari bersama rekan-rekan ulama sezamannya di tanah suci dari Nusantara sering dijuluki sebagai kelompok ulama...", options: ["Jaringan ulama Jawi (Nusantara abad ke-18)", "Ulama Khawarij", "Ulama Timur Tengah murni", "Bangsawan istana"], answer: 0 },
+            { question: "Kitab Sabil al-Muhtadin karya Syaikh Arsyad Al-Banjari secara khusus mengupas tuntas tentang ilmu...", options: ["Fikih ibadah (thaharah, shalat, zakat, puasa, haji)", "Ilmu Falak dan Astronomi", "Filsafat Islam klasik", "Sejarah peradaban dunia"], answer: 0 },
+            { question: "Apa kontribusi besar Syaikh Abdur Rauf As-Singkili dalam bidang penulisan di Aceh?", options: ["Menulis buku novel sejarah fiksi", "Menghasilkan puluhan karya tulis ilmiah keislaman, fikih, tasawuf, dan tafsir", "Menulis undang-undang perpajakan modern", "Mencetak mata uang logam"], answer: 1 },
+            { question: "Sifat keteladanan apa yang paling menonjol dari perjalanan hidup Syaikh Muhammad Arsyad Al-Banjari dalam menuntut ilmu?", options: ["Mudah menyerah ketika menghadapi kesulitan", "Keuletan, kesabaran yang luar biasa selama puluhan tahun belajar di rantau, serta keikhlasan mengajar umat", "Belajar secara instan tanpa guru", "Menolak berbagi ilmu dengan orang lain"], answer: 1 },
+            { question: "Bagaimana hubungan kerja sama antara Syaikh Muhammad Arsyad Al-Banjari dengan pihak Kesultanan Banjar?", options: ["Saling bermusuhan dan bersaing kekuasaan", "Sinergis dan harmonis, di mana sultan mendukung penuh program dakwah dan penataan hukum Islam", "Terpisah total tanpa komunikasi", "Sultan menolak kehadiran ulama"], answer: 1 },
+            { question: "Apa dampak jangka panjang dari karya-karya kitab ulama besar seperti Syaikh Abdur Rauf As-Singkili dan Syaikh Arsyad Al-Banjari bagi umat Islam di Nusantara?", options: ["Menjadi rujukan utama keislaman, fikih mazhab Syafi'i, dan pemersatu umat lintas generasi", "Membuat umat Islam bingung dan terpecah", "Tidak ada pengaruh sama sekali", "Hanya dibaca oleh kalangan istana saja"], answer: 0 },
+            { question: "Selain menulis kitab fikih, Syaikh Muhammad Arsyad Al-Banjari juga menulis karya di bidang ilmu falak/astronomi untuk menentukan arah kiblat di wilayah Banjar berjudul...", options: ["Sifatur Safwah", "Risalah Falakiyah / Al-Qawl al-Mukhtashar", "Kimiya al-Sa'adah", "Al-Manazir"], answer: 1 },
+            { question: "Ibrah atau hikmah terpenting dari kisah hidup Syaikh Abdur Rauf As-Singkili dan Syaikh Muhammad Arsyad Al-Banjari adalah...", options: ["Ilmu yang bermanfaat dan amal jariyah melalui tulisan serta pengajaran akan terus dikenang dan membawa keberkahan bagi umat sepanjang masa", "Menuntut ilmu di luar negeri adalah buang-buang waktu", "Ulama tidak perlu terlibat dalam urusan masyarakat", "Karya tulis tidak penting dibandingkan harta benda"], answer: 0 }
+        ],
+
+        "Bab 7 : Pendiri Organisasi Keagamaan di Indonesia": [
+            { question: "Siapakah pendiri organisasi Islam Muhammadiyah yang didirikan di Yogyakarta pada tahun 1912?", options: ["KH. Hasyim Asy'ari", "KH. Ahmad Dahlan", "H. O. S. Cokroaminoto", "KH. Abdul Halim"], answer: 1 },
+            { question: "Pada tahun berapakah organisasi Muhammadiyah secara resmi didirikan?", options: ["1908 M", "1912 M", "1926 M", "1930 M"], answer: 1 },
+            { question: "Siapakah ulama besar pendiri organisasi Nahdlatul Ulama (NU) di Surabaya pada tahun 1926?", options: ["KH. Ahmad Dahlan", "KH. Hasyim Asy'ari", "Syekh Ahmad Surkati", "A. Hassan"], answer: 1 },
+            { question: "Tahun berapakah organisasi Nahdlatul Ulama (NU) resmi didirikan?", options: ["1912 M", "1920 M", "1926 M", "1945 M"], answer: 2 },
+            { question: "Siapakah tokoh yang mendirikan Sarekat Dagang Islam (SDI) yang kemudian berubah menjadi Sarekat Islam (SI)?", options: ["H. Samanhudi", "H. O. S. Cokroaminoto", "Douwes Dekker", "Ki Hajar Dewantara"], answer: 0 },
+            { question: "Siapakah tokoh pemimpin besar Sarekat Islam yang terkenal dengan kepiawaian berpidatonya dan menjadikannya organisasi massa terbesar saat itu?", options: ["H. Samanhudi", "H. O. S. Cokroaminoto", "Agus Salim", "Tjipto Mangoenkoesoemo"], answer: 1 },
+            { question: "Siapakah ulama pendiri Al-Irsyad Al-Islamiyyah yang fokus pada pembaruan pendidikan dan pemurnian akidah?", options: ["Syekh Ahmad Surkati", "A. Hassan", "K.H. Mas Mansur", "Syekh Sulaiman Ar-Rasuli"], answer: 0 },
+            { question: "Organisasi Persatuan Islam (PERSIS) yang terkenal dengan gerakan kritis dan diskusi keagamaannya didirikan di Bandung oleh...", options: ["Haji Zamzam dan A. Hassan", "KH. Hasyim Asy'ari dan KH. Wahab Hasbullah", "KH. Ahmad Dahlan dan Kyai Fakih", "Syekh Jamil Jambek"], answer: 0 },
+            { question: "Organisasi sayap perempuan Muhammadiyah yang didirikan oleh Nyai Ahmad Dahlan (Siti Walidah) bernama...", options: ["Nasyiatul Aisyiyah", "Aisyiyah", "Muslimat NU", "Wanita Islam"], answer: 1 },
+            { question: "Siapakah ulama pendiri organisasi Perti (Persatuan Tarbiyah Islamiyah) di Minangkabau?", options: ["Syekh Sulaiman Ar-Rasuli", "Syekh Abdul Karim Amrullah", "Dr. H. Abdul Malik Karim Amrullah (Buya Hamka)", "Syekh Muhammad Jamil Jambek"], answer: 0 },
+            { question: "Organisasi Al-Washliyah yang bergerak di bidang pendidikan, dakwah, dan sosial didirikan di kota Medan oleh...", options: ["Para pelajar dan ulama Maktab Islamiyah Tapanuli (antara lain M. Arsyad Thalib Lubis)", "KH. Hasyim Asy'ari", "H. Samanhudi", "Sultan Mahmud Badaruddin"], answer: 0 },
+            { question: "Siapakah pendiri organisasi Persatuan Umat Islam (PUI) yang berasal dari Majalengka, Jawa Barat?", options: ["KH. Abdul Halim", "KH. Ahmad Dahlan", "KH. Zainal Musthafa", "KH. Hasyim Asy'ari"], answer: 0 },
+            { question: "Organisasi Mathla'ul Anwar yang berpusat di Menes, Pandeglang, Banten, didirikan pada tahun 1916 oleh para ulama salah satunya adalah...", options: ["KH. Mas Abdurahman", "KH. Sholeh Darat", "KH. As'ad Syamsul Arifin", "KH. Bisri Syansuri"], answer: 0 },
+            { question: "Siapakah ulama pendiri organisasi Nahdlatul Wathan di pulau Lombok, Nusa Tenggara Barat?", options: ["TGKH. Muhammad Zainuddin Abdul Madjid (Maulana Syaikh)", "TGKH. Lutfi Hakim", "Tuan Guru Haji Umar", "Syekh Zainuddin Majid"], answer: 0 },
+            { question: "Apa tujuan utama didirikannya berbagai organisasi keagamaan Islam pada masa pergerakan nasional di Indonesia?", options: ["Mencerdaskan kehidupan bangsa, melawan kebodohan, dan menumbuhkan kesadaran nasional melawan penjajah", "Mendirikan kerajaan militer baru", "Memonopoli perdagangan rempah internasional", "Menutup akses pendidikan bagi rakyat jelata"], answer: 0 },
+            { question: "Tokoh pembaru Islam dari Minangkabau pelopor gerakan modern Islam (Kaum Muda) penulis majalah Al-Munir adalah...", options: ["Syekh Abdul Karim Amrullah (Haji Rasul) dan kawan-kawan", "Syekh Sulaiman Ar-Rasuli", "Sultan Iskandar Muda", "Tuanku Imam Bonjol"], answer: 0 },
+            { question: "Bagaimana hubungan antarorganisasi keagamaan Islam pada masa pergerakan kemerdekaan Indonesia?", options: ["Saling bersaing untuk menghancurkan", "Saling melengkapi dan bersatu dalam semangat ukhuwah islamiyah dan kebangsaan demi kemerdekaan", "Terisolasi total tanpa komunikasi", "Selalu berperang fisik memperebutkan wilayah"], answer: 1 },
+            { question: "Organisasi wanita Islam yang didirikan oleh H. O. S. Cokroaminoto bersama tokoh Sarekat Islam untuk pemberdayaan perempuan bernama...", options: ["Wanita Islam", "Aisyiyah", "Muslimat NU", "Perwari"], answer: 0 },
+            { question: "Peran strategis para tokoh pendiri organisasi keagamaan dalam sejarah bangsa Indonesia adalah...", options: ["Sebagai pelopor pencerahan, pembentukan karakter bangsa, dan motor pergerakan nasional", "Sebagai pembantu administrasi kolonial", "Sebagai pedagang asing tanpa pengaruh sosial", "Sebagai penguasa monarki absolut"], answer: 0 },
+            { question: "Ibrah atau hikmah penting dari berdirinya berbagai organisasi keagamaan di Indonesia adalah...", options: ["Kesadaran berorganisasi, pentingnya persatuan umat, serta dedikasi total untuk pendidikan dan kemajuan bangsa", "Perpecahan adalah kunci keberhasilan organisasi", "Organisasi hanya dibentuk untuk mencari ketenaran semata", "Pendidikan formal tidak penting bagi umat Islam"], answer: 0 }
+        ]
+    };
+
+    let activeQuizData = [];
+    let currentQuestionIndex = 0;
+    let score = 0;
+    let selectedOption = null;
+    let studentName = "";
+    let studentClass = "";
+    let studentMateri = "";
+
+    function handleClassChange() {
+        const classVal = document.getElementById("student-class").value;
+        const materiSelect = document.getElementById("student-materi");
+        
+        materiSelect.innerHTML = '<option value="" disabled selected>-- Pilih Materi Pembelajaran --</option>';
+        
+        if (classVal) {
+            const tingkat = classVal.charAt(0); 
+            const listMateri = materiPerPelajaran[tingkat] || [];
+            
+            listMateri.forEach(materi => {
+                const opt = document.createElement("option");
+                opt.value = materi;
+                opt.textContent = materi;
+                materiSelect.appendChild(opt);
+            });
+            
+            materiSelect.disabled = false;
+        } else {
+            materiSelect.disabled = true;
+        }
+        checkFormValidity();
+    }
+
+    document.getElementById("student-name").addEventListener("input", checkFormValidity);
+    document.getElementById("student-class").addEventListener("change", checkFormValidity);
+    document.getElementById("student-materi").addEventListener("change", checkFormValidity);
+
+    function checkFormValidity() {
+        const name = document.getElementById("student-name").value.trim();
+        const studentClass = document.getElementById("student-class").value;
+        const materi = document.getElementById("student-materi").value;
+        const startBtn = document.getElementById("start-btn");
+
+        if (name && studentClass && materi) {
+            startBtn.disabled = false;
+        } else {
+            startBtn.disabled = true;
+        }
+    }
+
+    function startQuiz() {
+        studentName = document.getElementById("student-name").value.trim();
+        studentClass = document.getElementById("student-class").value;
+        studentMateri = document.getElementById("student-materi").value;
+
+        activeQuizData = bankSoal[studentMateri] || [];
+
+        if (activeQuizData.length === 0) {
+            alert("Maaf, soal untuk materi ini belum tersedia atau belum diisi di database. Silakan pilih materi lain.");
+            return;
+        }
+
+        currentQuestionIndex = 0;
+        score = 0;
+
+        document.getElementById("student-info-display").innerText = `${studentName} (${studentClass})`;
+        document.getElementById("screen-welcome").classList.remove("active");
+        document.getElementById("screen-quiz").classList.add("active");
+        loadQuestion();
+    }
+
+    function loadQuestion() {
+        selectedOption = null;
+        document.getElementById("next-btn").disabled = true;
+        const currentQ = activeQuizData[currentQuestionIndex];
+        document.getElementById("question-counter").innerText = `Soal ${currentQuestionIndex + 1} dari ${activeQuizData.length}`;
+        document.getElementById("question-text").innerText = currentQ.question;
+        const optionsContainer = document.getElementById("options-container");
+        optionsContainer.innerHTML = "";
+
+        currentQ.options.forEach((option, index) => {
+            const div = document.createElement("div");
+            div.className = "option-item";
+            div.innerHTML = `<i class="fa-regular fa-circle" style="color: var(--text-muted);"></i> <span>${option}</span>`;
+            div.onclick = () => selectOption(index, div);
+            optionsContainer.appendChild(div);
+        });
+    }
+
+    function selectOption(index, element) {
+        document.querySelectorAll(".option-item").forEach(el => {
+            el.classList.remove("selected");
+            el.querySelector("i").className = "fa-regular fa-circle";
+            el.querySelector("i").style.color = "var(--text-muted)";
+        });
+        element.classList.add("selected");
+        element.querySelector("i").className = "fa-solid fa-circle-check";
+        element.querySelector("i").style.color = "var(--primary)";
+        selectedOption = index;
+        document.getElementById("next-btn").disabled = false;
+    }
+
+    function nextQuestion() {
+        if (selectedOption === null) return;
+        
+        const pointsPerQuestion = 100 / activeQuizData.length;
+        if (selectedOption === activeQuizData[currentQuestionIndex].answer) {
+            score += pointsPerQuestion; 
+        }
+
+        currentQuestionIndex++;
+        if (currentQuestionIndex < activeQuizData.length) {
+            loadQuestion();
+        } else {
+            showResult();
+        }
+    }
+
+    function showResult() {
+        const finalScoreRounded = Math.round(score);
+        document.getElementById("screen-quiz").classList.remove("active");
+        document.getElementById("screen-result").classList.add("active");
+        document.getElementById("final-score").innerText = finalScoreRounded;
+        document.getElementById("result-desc-text").innerText = `Nilai kamu: ${finalScoreRounded}/100. Terima kasih sudah menyelesaikan evaluasi!`;
+
+        const payload = { 
+            name: studentName, 
+            class: studentClass, 
+            materi: studentMateri, 
+            score: finalScoreRounded 
+        };
+
+        fetch(SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        }).then(() => {
+            document.getElementById("sync-status").style.display = "block";
+        }).catch(err => {
+            console.error("Gagal mengirim data:", err);
+        });
+    }
+
+    function restartQuiz() {
+        currentQuestionIndex = 0;
+        score = 0;
+        activeQuizData = [];
+        document.getElementById("screen-result").classList.remove("active");
+        document.getElementById("screen-welcome").classList.add("active");
+        document.getElementById("student-name").value = "";
+        document.getElementById("student-class").selectedIndex = 0;
+        const materiSelect = document.getElementById("student-materi");
+        materiSelect.innerHTML = '<option value="" disabled selected>-- Pilih Kelas Terlebih Dahulu --</option>';
+        materiSelect.disabled = true;
+        document.getElementById("start-btn").disabled = true;
+        document.getElementById("sync-status").style.display = "none";
+    }
+</script>
+</body>
+</html>
