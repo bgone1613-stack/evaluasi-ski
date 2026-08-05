@@ -19,7 +19,15 @@
             --border: #E2E8F0;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
-        body { background-color: var(--bg-color); color: var(--text-main); min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px; }
+        body { 
+    background-color: var(--bg-color); 
+    color: var(--text-main); 
+    width: 100%;
+    margin: 0;
+    padding: 10px;
+    overflow: hidden; /* Mengunci scroll internal iframe agar tidak dobel */
+    display: block; 
+}
         .container { width: 100%; max-width: 800px; background: var(--card-bg); border-radius: 16px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05); overflow: hidden; border: 1px solid var(--border); }
         .header { background: linear-gradient(135deg, #4F46E5 0%, #3730A3 100%); color: white; padding: 30px; text-align: center; }
         .header h1 { font-size: 24px; font-weight: 700; margin-bottom: 8px; }
@@ -608,7 +616,7 @@
         currentQuestionIndex = 0;
         score = 0;
 
-        document.getElementById("student-info-display").innerText = `${studentName} (${studentClass})`;
+        document.getElementById("student-info-display").innerText = `${currentStudentName} (${currentStudentClass})`;
         document.getElementById("screen-welcome").classList.remove("active");
         document.getElementById("screen-quiz").classList.add("active");
         loadQuestion();
