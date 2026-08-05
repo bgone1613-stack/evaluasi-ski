@@ -23,10 +23,13 @@
     background-color: var(--bg-color); 
     color: var(--text-main); 
     width: 100%;
+    min-height: 100vh;
     margin: 0;
-    padding: 0;
-    overflow: hidden; /* Mengunci scroll internal iframe agar tidak dobel */
-    display: block; 
+    padding: 10px 0;
+    overflow: hidden; 
+    display: flex;                  /* Membuat sistem pengatur posisi aktif */
+    justify-content: center;        /* Memposisikan kuis agar ke tengah secara horizontal */
+    align-items: flex-start;        /* Menjaga posisi kuis tetap di atas (tidak melayang di tengah vertikal) */
 }
         .container { width: 100%; max-width: 800px; background: var(--card-bg); border-radius: 16px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05); overflow: hidden; border: 1px solid var(--border); }
         .header { background: linear-gradient(135deg, #4F46E5 0%, #3730A3 100%); color: white; padding: 30px; text-align: center; }
