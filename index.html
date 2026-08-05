@@ -686,6 +686,8 @@
             studentClass = savedClass;
             showQuizList();
         } else {
+            // FIX: Menampilkan setup-section agar tidak blank
+            document.getElementById("setup-section").style.display = "flex";
             fetchStudentsData();
         }
     };
@@ -949,7 +951,6 @@
         document.getElementById("result-score-val").innerText = finalScore;
         document.getElementById("result-message").innerText = `Kamu menjawab benar ${correctCount} dari ${total} soal (${currentActiveQuiz.title}).`;
 
-        // Kirim data ke backend dengan properti 'materi' agar cocok dengan Google Apps Script
         let payload = {
             action: "submitEvaluasi",
             name: studentName,
