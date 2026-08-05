@@ -290,11 +290,12 @@
     let globalStudentData = [];
     let currentStudentObj = null;
 
-    // Data Kuis Evaluasi SKI
+    // Database Kuis Evaluasi SKI Lengkap Kelas 7, 8, dan 9
     const quizDatabase = [
+        // ================= KELAS 7 =================
         {
             id: 1,
-            title: "Evaluasi Bab 1: Strategi Dakwah Nabi di Makkah",
+            title: "Kelas 7 - Bab 1: Dakwah Nabi Muhammad SAW di Makkah",
             desc: "Uji pemahaman tentang tantangan dan strategi awal dakwah Islam di Makkah.",
             questions: [
                 {
@@ -303,88 +304,370 @@
                     answer: 1
                 },
                 {
-                    q: "Dakwah secara terang-terangan (jahr) dimulai setelah turunnya surah dan ayat yang memerintahkan untuk memperingatkan kerabat terdekat, yaitu...",
+                    q: "Dakwah secara terang-terangan (jahr) dimulai setelah turunnya ayat yang memerintahkan untuk memperingatkan kerabat terdekat, yaitu...",
                     options: ["QS. Al-Hijr: 94", "QS. Al-Muddassir: 1-7", "QS. Al-Alaq: 1-5", "QS. Yasin: 1-3"],
                     answer: 0
                 },
                 {
-                    q: "Siapakah nama sahabat dari kalangan bangsawan kaya yang dermawan dan memerdekakan Bilal bin Rabah?",
+                    q: "Siapakah sahabat dari kalangan bangsawan kaya yang memerdekakan Bilal bin Rabah?",
                     options: ["Utsman bin Affan", "Umar bin Khattab", "Abu Bakar Ash-Shiddiq", "Ali bin Abi Thalib"],
-                    answer: 2
-                },
-                {
-                    q: "Tahun kesedihan (Amul Huzni) dalam sejarah Islam ditandai dengan wafatnya dua orang pendukung utama Nabi, yaitu...",
-                    options: ["Khadijah binti Khuwailid dan Abu Thalib", "Hamzah bin Abdul Muthalib dan Siti Aminah", "Abu Bakar dan Zaid bin Haritsah", "Ali bin Abi Thalib dan Fatimah"],
-                    answer: 0
-                },
-                {
-                    q: "Peristiwa hijrah pertama umat Islam pada masa awal dakwah Makkah dilakukan ke negeri...",
-                    options: ["Madinah", "Yatsrib", "Habsyah (Abisinia)", "Taif"],
                     answer: 2
                 }
             ]
         },
         {
             id: 2,
-            title: "Evaluasi Bab 2: Piagam Madinah & Masyarakat Majemuk",
-            desc: "Mengevaluasi substansi Piagam Madinah dalam membangun masyarakat toleran.",
+            title: "Kelas 7 - Bab 2: Dakwah Nabi Muhammad SAW di Madinah",
+            desc: "Mengevaluasi substansi hijrah, pembangunan masjid, dan Piagam Madinah.",
             questions: [
-                {
-                    q: "Piagam Madinah dideklarasikan oleh Nabi Muhammad SAW pada tahun...",
-                    options: ["1 Hijriyah / 622 M", "3 Hijriyah / 624 M", "8 Hijriyah / 630 M", "10 Hijriyah / 632 M"],
-                    answer: 0
-                },
-                {
-                    q: "Salah satu poin penting dalam Piagam Madinah adalah kebebasan beragama bagi seluruh penduduk, baik Muslim maupun...",
-                    options: ["Kaum Quraisy Makkah", "Non-Muslim (Yahudi dan kabilah lain)", "Pasukan Romawi", "Penduduk Persia"],
-                    answer: 1
-                },
                 {
                     q: "Sebelum dinamakan Madinah al-Munawwarah, kota tersebut dikenal dengan nama...",
                     options: ["Taif", "Yatsrib", "Kuffah", "Bashrah"],
                     answer: 1
                 },
                 {
-                    q: "Persaudaraan yang dibangun Nabi Muhammad SAW di antara kaum Muhajirin dan Anshar disebut konsep...",
+                    q: "Persaudaraan yang dibangun Nabi Muhammad SAW antara kaum Muhajirin dan Anshar disebut...",
                     options: ["Ukhuwah Islamiyah", "Ukhuwah Wathaniyah", "Ukhuwah Basyariyah", "Ukhuwah Insaniyah"],
                     answer: 0
                 },
                 {
-                    q: "Prinsip utama dalam Piagam Madinah terkait pertahanan kota adalah...",
-                    options: ["Masing-masing kelompok membela diri sendiri", "Bersatu padu mempertahankan Madinah dari serangan musuh luar", "Menyerahkan keamanan kepada pihak sekutu luar", "Melakukan gencatan senjata permanen"],
-                    answer: 1
+                    q: "Piagam Madinah dideklarasikan untuk mengatur kehidupan masyarakat majemuk di Madinah yang terdiri atas berbagai...",
+                    options: ["Suku dan agama", "Kasta sosial", "Bangsa pedagang", "KERAJAAN"],
+                    answer: 0
                 }
             ]
         },
         {
             id: 3,
-            title: "Evaluasi Bab 3: Daulah Abbasiyah & Baitul Hikmah",
-            desc: "Mengkaji masa keemasan peradaban Islam di Baghdad serta pusat ilmu pengetahuan.",
+            title: "Kelas 7 - Bab 3: Kepemimpinan Khulafaurrasyidin",
+            desc: "Mengkaji masa kepemimpinan empat sahabat utama setelah wafatnya Nabi.",
             questions: [
                 {
-                    q: "Pusat pemerintahan Daulah Abbasiyah dipindahkan dari Damaskus ke kota baru yang dibangun yaitu...",
-                    options: ["Kairo", "Baghdad", "Kordoba", "Samarkand"],
-                    answer: 1
+                    q: "Siapakah khalifah pertama dari Khulafaurrasyidin?",
+                    options: ["Umar bin Khattab", "Utsman bin Affan", "Abu Bakar Ash-Shiddiq", "Ali bin Abi Thalib"],
+                    answer: 2
                 },
                 {
-                    q: "Lembaga perpustakaan, pusat penerjemahan, dan akademi ilmu pengetahuan terkenal pada masa Abbasiyah bernama...",
-                    options: ["Darul Arqam", "Baitul Hikmah", "Darul Ulum", "Madrasah Nizhamiyah"],
-                    answer: 1
-                },
-                {
-                    q: "Tokoh ilmuwan Muslim di bidang kedokteran yang menulis kitab Al-Qanun fi at-Tibb (The Canon of Medicine) adalah...",
-                    options: ["Al-Khawarizmi", "Ibnu Sina (Avicenna)", "Ibnu Khaldun", "Al-Farabi"],
-                    answer: 1
-                },
-                {
-                    q: "Ilmuwan Muslim yang dikenal sebagai bapak Aljabar dan penemu angka nol adalah...",
-                    options: ["Al-Khawarizmi", "Jabir bin Hayyan", "Al-Kindi", "Ibnu Haitsam"],
+                    q: "Gelar 'Al-Faruq' (pembeda antara yang hak dan batil) diberikan kepada...",
+                    options: ["Umar bin Khattab", "Utsman bin Affan", "Ali bin Abi Thalib", "Abu Bakar Ash-Shiddiq"],
                     answer: 0
                 },
                 {
-                    q: "Puncak keemasan (Golden Age) Daulah Abbasiyah secara umum terjadi pada masa pemerintahan Khalifah...",
-                    options: ["Abu Ja'far al-Mansur", "Harun ar-Rasyid dan putranya Al-Makmun", "Muawiyah bin Abi Sufyan", "Abdul Malik bin Marwan"],
+                    q: "Pada masa khalifah siapakah kodifikasi (penulisan resmi) Al-Qur'an mushaf standar mulai disatukan dan digandakan?",
+                    options: ["Abu Bakar Ash-Shiddiq", "Umar bin Khattab", "Utsman bin Affan", "Ali bin Abi Thalib"],
+                    answer: 2
+                }
+            ]
+        },
+        {
+            id: 4,
+            title: "Kelas 7 - Bab 4: Daulah Umayyah",
+            desc: "Mempelajari sejarah berdirinya dan perkembangan peradaban masa Daulah Umayyah.",
+            questions: [
+                {
+                    q: "Pendiri Daulah Umayyah di Damaskus adalah...",
+                    options: ["Muawiyah bin Abi Sufyan", "Umar bin Abdul Aziz", "Walid bin Abdul Malik", "Marwan bin Hakam"],
+                    answer: 0
+                },
+                {
+                    q: "Pusat pemerintahan Daulah Umayyah terletak di kota...",
+                    options: ["Baghdad", "Kairo", "Damaskus", "Kordoba"],
+                    answer: 2
+                },
+                {
+                    q: "Bidang pembangunan arsitektur yang menonjol pada masa Daulah Umayyah di Damaskus adalah...",
+                    options: ["Masjid Umayyah", "Taj Mahal", "Istana Al-Hambra", "Menara Pisa"],
+                    answer: 0
+                }
+            ]
+        },
+        {
+            id: 5,
+            title: "Kelas 7 - Bab 5: Gaya Kepemimpinan Umar bin Abdul Aziz",
+            desc: "Meneladani kepemimpinan yang adil, jujur, dan zuhud dari Umar bin Abdul Aziz.",
+            questions: [
+                {
+                    q: "Umar bin Abdul Aziz berasal dari dinasti...",
+                    options: ["Abbasiyah", "Umayyah", "Ayyubiyah", "Mamluk"],
                     answer: 1
+                },
+                {
+                    q: "Salah satu ciri khas kepemimpinan Umar bin Abdul Aziz adalah sifatnya yang...",
+                    options: ["Otoriter", "Zuhud dan sangat adil", "Eksklusif", "Materialistis"],
+                    answer: 1
+                },
+                {
+                    q: "Kebijakan penting Umar bin Abdul Aziz adalah menghapus pajak diskriminatif terhadap golongan...",
+                    options: ["Mawali (Muslim non-Arab)", "Bangsawan", "Kaum Quraisy", "Tentara istana"],
+                    answer: 0
+                }
+            ]
+        },
+
+        // ================= KELAS 8 =================
+        {
+            id: 6,
+            title: "Kelas 8 - Bab 1: Sejarah Peradaban Islam Masa Daulah Abbasiyah",
+            desc: "Mengkaji masa keemasan peradaban Islam di Baghdad.",
+            questions: [
+                {
+                    q: "Pusat pemerintahan Daulah Abbasiyah didirikan di kota...",
+                    options: ["Damaskus", "Baghdad", "Kairo", "Makkah"],
+                    answer: 1
+                },
+                {
+                    q: "Puncak keemasan (Golden Age) Daulah Abbasiyah tercapai pada masa Khalifah...",
+                    options: ["Abu Ja'far al-Mansur", "Harun ar-Rasyid", "Muawiyah bin Abi Sufyan", "Marwan bin Hakam"],
+                    answer: 1
+                },
+                {
+                    q: "Pendiri kota Baghdad sekaligus khalifah kedua Daulah Abbasiyah adalah...",
+                    options: ["Abu Ja'far al-Mansur", "Al-Makmun", "Al-Hadi", "Al-Mu'tasim"],
+                    answer: 0
+                }
+            ]
+        },
+        {
+            id: 7,
+            title: "Kelas 8 - Bab 2: Peran Ilmuan Muslim dan Ulama Terhadap Peradaban",
+            desc: "Mengenal kontribusi ilmuwan dan ulama besar di era Daulah Abbasiyah.",
+            questions: [
+                {
+                    q: "Lembaga akademi ilmu pengetahuan dan pusat penerjemahan terbesar di Baghdad bernama...",
+                    options: ["Darul Arqam", "Baitul Hikmah", "Madrasah Nizhamiyah", "Darul Ulum"],
+                    answer: 1
+                },
+                {
+                    q: "Tokoh ilmuwan Muslim di bidang kedokteran penulis kitab Al-Qanun fi at-Tibb adalah...",
+                    options: ["Al-Khawarizmi", "Ibnu Sina (Avicenna)", "Jabir bin Hayyan", "Al-Kindi"],
+                    answer: 1
+                },
+                {
+                    q: "Ilmuwan penemu angka nol dan bapak Aljabar adalah...",
+                    options: ["Al-Khawarizmi", "Ibnu Haitsam", "Al-Farabi", "Al-Biruni"],
+                    answer: 0
+                }
+            ]
+        },
+        {
+            id: 8,
+            title: "Kelas 8 - Bab 3: Daulah Ayyubiyah: Cinta Tanah Air & Semangat Persatuan",
+            desc: "Memahami sejarah berdirinya Daulah Ayyubiyah dan semangat persatuannya.",
+            questions: [
+                {
+                    q: "Pendiri Daulah Ayyubiyah adalah...",
+                    options: ["Shalahuddin al-Ayyubi", "Nuruddin Zanki", "Al-Malik al-Adil", "Imaduddin Zanki"],
+                    answer: 0
+                },
+                {
+                    q: "Kota penting yang berhasil direbut kembali oleh Shalahuddin al-Ayyubi dari pasukan Salib adalah...",
+                    options: ["Kairo", "Baitul Maqdis (Yerusalem)", "Damaskus", "Aleppo"],
+                    answer: 1
+                },
+                {
+                    q: "Salah satu sifat teladan Shalahuddin al-Ayyubi dalam memimpin adalah...",
+                    options: ["Toleransi tinggi dan pemaaf", "Kejam terhadap lawan", "Sombong", "Eksklusif"],
+                    answer: 0
+                }
+            ]
+        },
+        {
+            id: 9,
+            title: "Kelas 8 - Bab 4: Pemimpin & Ilmuwan Daulah Ayyubiyah",
+            desc: "Meneladani karya dan keteladanan para pemimpin serta ilmuwan di masa Ayyubiyah.",
+            questions: [
+                {
+                    q: "Selain sebagai panglima perang yang tangguh, Shalahuddin al-Ayyubi dikenal sangat mencintai...",
+                    options: ["Ilmu pengetahuan dan ulama", "Harta rampasan perang", "Kekuasaan mutlak", "Kemewahan istana"],
+                    answer: 0
+                },
+                {
+                    q: "Pusat pendidikan dan kebudayaan utama pada masa Daulah Ayyubiyah berada di kota...",
+                    options: ["Kairo (Mesir)", "Baghdad", "Makkah", "Madinah"],
+                    answer: 0
+                },
+                {
+                    q: "Sistem pendidikan yang dikembangkan pada masa Ayyubiyah banyak berpusat di lembaga...",
+                    options: ["Madrasah", "Padang pasir", "Istana saja", "Pasar umum"],
+                    answer: 0
+                }
+            ]
+        },
+        {
+            id: 10,
+            title: "Kelas 8 - Bab 5: Daulah Mamluk: Benteng Peradaban Islam",
+            desc: "Mempelajari ketangguhan Daulah Mamluk dalam membentengi peradaban Islam.",
+            questions: [
+                {
+                    q: "Daulah Mamluk berpusat di negara...",
+                    options: ["Mesir", "Irak", "Spanyol", "India"],
+                    answer: 0
+                },
+                {
+                    q: "Pasukan besar yang berhasil dikalahkan oleh Daulah Mamluk di bawah pimpinan Sultan Qutuz dan Baybars adalah...",
+                    options: ["Tentara Mongol", "Tentara Romawi", "Tentara Persia", "Tentara Yunani"],
+                    answer: 0
+                },
+                {
+                    q: "Asal usul tentara Mamluk sebagian besar berasal dari kalangan...",
+                    options: ["Budak militer pilihan yang kemudian memegang kekuasaan", "Bangsawan kaya Eropa", "Petani lokal Mesir", "Pedagang lintas benua"],
+                    answer: 0
+                }
+            ]
+        },
+
+        // ================= KELAS 9 =================
+        {
+            id: 11,
+            title: "Kelas 9 - Bab 1: Sejarah Islam di Indonesia",
+            desc: "Mengkaji proses masuknya agama Islam ke Nusantara melalui berbagai jalur.",
+            questions: [
+                {
+                    q: "Teori utama masuknya Islam ke Indonesia meliputi teori Gujarat, teori Persia, dan teori...",
+                    options: ["Arab (Mekkah/Mesir)", "China", "India Selatan", "Eropa"],
+                    answer: 0
+                },
+                {
+                    q: "Jalur utama yang digunakan para mubaligh dalam menyebarkan Islam di awal masuknya ke Nusantara adalah...",
+                    options: ["Perdagangan, perkawinan, tasawuf, dan pendidikan", "Penaklukan militer besar-besaran", "Paksaan politik kerajaan", "Pertanian modern"],
+                    answer: 0
+                },
+                {
+                    q: "Bukti arkeologis awal keberadaan Islam di Nusantara dapat dilihat pada batu nisan makam di...",
+                    options: ["Pasai, Aceh", "Demak", "Surabaya", "Banten"],
+                    answer: 0
+                }
+            ]
+        },
+        {
+            id: 12,
+            title: "Kelas 9 - Bab 2: Kerajaan Islam di Indonesia",
+            desc: "Mengenal sejarah perkembangan kerajaan-kerajaan Islam di berbagai wilayah Nusantara.",
+            questions: [
+                {
+                    q: "Kerajaan Islam pertama di Nusantara yang terletak di Aceh adalah...",
+                    options: ["Samudera Pasai", "Kesultanan Malaka", "Kerajaan Demak", "Kesultanan Banten"],
+                    answer: 0
+                },
+                {
+                    q: "Kerajaan Islam pertama di Pulau Jawa adalah...",
+                    options: ["Demak", "Mataram Islam", "Pajang", "Cirebon"],
+                    answer: 0
+                },
+                {
+                    q: "Raja pertama Kesultanan Demak adalah...",
+                    options: ["Raden Patah", "Sultan Agung", "Sunan Ampel", "Fatahillah"],
+                    answer: 0
+                }
+            ]
+        },
+        {
+            id: 13,
+            title: "Kelas 9 - Bab 3: Peran Pesantren dalam Dakwah Islam di Indonesia",
+            desc: "Mempelajari peran strategis pesantren sebagai pusat pendidikan dan dakwah.",
+            questions: [
+                {
+                    q: "Pesantren merupakan lembaga pendidikan tradisional Islam di Indonesia yang berfungsi sebagai pusat...",
+                    options: ["Kaderisasi ulama dan dakwah", "Militer kerajaan", "Perdagangan internasional", "Pusat pemerintahan"],
+                    answer: 0
+                },
+                {
+                    q: "Unsur utama pembentuk sebuah pesantren tradisional umumnya meliputi kyai, santri, masjid, asrama, dan...",
+                    options: ["Pengajian kitab kuning", "Laboratorium sains", "Pabrik industri", "Stadion olahraga"],
+                    answer: 0
+                },
+                {
+                    q: "Peran pesantren pada masa kemerdekaan sangat besar dalam menanamkan semangat...",
+                    options: ["Cinta tanah air dan jihad (Wathon Minal Iman)", "Liberalisme", "Kolonialisme", "Sekulerisme"],
+                    answer: 0
+                }
+            ]
+        },
+        {
+            id: 14,
+            title: "Kelas 9 - Bab 4: Nilai-Nilai Islam dan Kearifan Lokal",
+            desc: "Mengkaji akulturasi kebudayaan Islam dengan tradisi dan kearifan lokal Nusantara.",
+            questions: [
+                {
+                    q: "Proses percampuran antara budaya lokal asli dengan ajaran Islam tanpa menghilangkan bentuk aslinya disebut...",
+                    options: ["Akulturasi budaya", "Asimilasi total", "Sekulerisasi", "Westernisasi"],
+                    answer: 0
+                },
+                {
+                    q: "Contoh bentuk kearifan lokal di Jawa yang diisi muatan dakwah Islam oleh para wali adalah...",
+                    options: ["Sekaten / Tradisi Maulid Nabi", "Upacara sesajen mutlak", "Teater modern barat", "Klub malam"],
+                    answer: 0
+                },
+                {
+                    q: "Pendekatan dakwah yang dilakukan para Wali dalam merangkul budaya lokal bersifat...",
+                    options: ["Bijaksana, damai, dan persuasif", "Keras dan memaksa", "Menghapus seluruh tradisi", "Mengisolasi diri"],
+                    answer: 0
+                }
+            ]
+        },
+        {
+            id: 15,
+            title: "Kelas 9 - Bab 5: Walisanga dalam Dakwah Islam di Indonesia",
+            desc: "Mengenal strategi dakwah dan keteladanan para Wali Sanga di Tanah Jawa.",
+            questions: [
+                {
+                    q: "Istilah 'Walisanga' berarti...",
+                    options: ["Sembilan orang wali", "Wali penyebar agama", "Tokoh ulama besar", "Dewan penasehat raja"],
+                    answer: 0
+                },
+                {
+                    q: "Siapakah tokoh Wali Sanga yang dikenal sebagai pencipta tembang orisinal dan tembang macapat seperti Ilir-ilir?",
+                    options: ["Sunan Kalijaga", "Sunan Ampel", "Sunan Bonang", "Sunan Giri"],
+                    answer: 2
+                },
+                {
+                    q: "Pusat aktivitas dakwah Sunan Ampel berada di daerah...",
+                    options: ["Ampel Denta, Surabaya", "Kudus", "Cirebon", "Gresik"],
+                    answer: 0
+                }
+            ]
+        },
+        {
+            id: 16,
+            title: "Kelas 9 - Bab 6: Syaikh Abdur Rauf As-Singkili & Syaikh Muhammad Arsyad Al-Banjari",
+            desc: "Mempelajari biografi dan karya ulama besar Nusantara asal Aceh dan Banjar.",
+            questions: [
+                {
+                    q: "Syaikh Abdur Rauf As-Singkili adalah ulama besar Nusantara yang terkenal dari wilayah...",
+                    options: ["Aceh", "Kalimantan Selatan", "Sumatera Barat", "Sulawesi Selatan"],
+                    answer: 0
+                },
+                {
+                    q: "Syaikh Muhammad Arsyad Al-Banjari menulis kitab fiqih mazhab Syafi'i yang sangat terkenal di Nusantara berjudul...",
+                    options: ["Sabilal Muhtadin", "Fathul Qarib", "Minhajul Abidin", "Safinatun Najah"],
+                    answer: 0
+                },
+                {
+                    q: "Syaikh Muhammad Arsyad Al-Banjari berasal dari daerah...",
+                    options: ["Banjar (Kalimantan Selatan)", "Palembang", "Medan", "Padang"],
+                    answer: 0
+                }
+            ]
+        },
+        {
+            id: 17,
+            title: "Kelas 9 - Bab 7: Pendiri Organisasi Keagamaan di Indonesia",
+            desc: "Mengenal peran tokoh-tokoh pendiri ormas Islam dalam memajukan pendidikan dan bangsa.",
+            questions: [
+                {
+                    q: "Organisasi Nahdlatul Ulama (NU) didirikan pada tahun 1926 oleh ulama besar di antaranya...",
+                    options: ["KH. Hasyim Asy'ari", "KH. Ahmad Dahlan", "H.O.S. Cokroaminoto", "Ki Hajar Dewantara"],
+                    answer: 0
+                },
+                {
+                    q: "Organisasi Muhammadiyah didirikan di Yogyakarta pada tahun 1912 oleh...",
+                    options: ["KH. Ahmad Dahlan", "KH. Hasyim Asy'ari", "Syekh Ahmad Khatib", "Abikusno"],
+                    answer: 0
+                },
+                {
+                    q: "Tujuan utama pendirian organisasi-organisasi keagamaan Islam tersebut di masa kolonial adalah...",
+                    options: ["Memajukan pendidikan, sosial, dan memurnikan ajaran Islam", "Membentuk partai politik militer", "Menutup akses sekolah barat", "Berdagang komoditas"],
+                    answer: 0
                 }
             ]
         }
@@ -684,7 +967,7 @@
     }
 
     function goToPortal() {
-        window.location.href = 'index.html'; // atau portal utama
+        window.location.href = 'https://sites.google.com/view/portal-ski-kbc/halaman-muka?authuser=0';
     }
 
     function logoutQuiz() {
