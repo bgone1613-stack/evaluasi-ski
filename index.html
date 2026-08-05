@@ -619,7 +619,9 @@
         currentQuestionIndex = 0;
         score = 0;
 
-        document.getElementById("student-info-display").innerText = `${currentStudentName} (${currentStudentClass})`;
+        // PERBAIKAN DI SINI (menggunakan variabel yang sesuai)
+        document.getElementById("student-info-display").innerText = `${studentName} (${studentClass})`;
+        
         document.getElementById("screen-welcome").classList.remove("active");
         document.getElementById("screen-quiz").classList.add("active");
         loadQuestion();
