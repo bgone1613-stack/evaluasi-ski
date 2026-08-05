@@ -949,12 +949,12 @@
         document.getElementById("result-score-val").innerText = finalScore;
         document.getElementById("result-message").innerText = `Kamu menjawab benar ${correctCount} dari ${total} soal (${currentActiveQuiz.title}).`;
 
-        // Kirim data ke backend jika perlu
+        // Kirim data ke backend dengan properti 'materi' agar cocok dengan Google Apps Script
         let payload = {
             action: "submitEvaluasi",
             name: studentName,
             class: studentClass,
-            quizTitle: currentActiveQuiz.title,
+            materi: currentActiveQuiz.title,
             score: finalScore
         };
 
